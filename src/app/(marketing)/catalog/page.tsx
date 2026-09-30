@@ -48,7 +48,7 @@ export default async function CatalogPage({ searchParams }: PageProps<"/catalog"
       {activeServiceName ? (
         <p className="mt-6 text-sm text-muted-foreground">
           Menampilkan <strong className="font-medium text-foreground">{activeServiceName}</strong>
-          {isCustomView ? " — layanan utama kami, dengan keleluasaan desain terbesar." : ""}
+          {isCustomView ? ", layanan utama kami dengan keleluasaan desain terbesar." : ""}
         </p>
       ) : null}
 

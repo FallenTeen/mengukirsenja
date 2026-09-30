@@ -87,6 +87,10 @@ function revalidateOrders(orderId?: string): void {
   for (const path of ["/admin", "/admin/orders", "/admin/calendar", "/customer/orders"]) {
     revalidatePath(path, "page");
   }
+  // The portal summary reads these too, and an order edit changes what the
+  // customer sees on their own dashboard.
+  revalidatePath("/customer", "layout");
+  revalidatePath("/customer/profile", "page");
   if (orderId) {
     revalidatePath(`/admin/orders/${orderId}`, "page");
     revalidatePath(`/customer/orders/${orderId}`, "page");

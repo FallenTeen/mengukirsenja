@@ -138,7 +138,7 @@ export async function CalendarGrid({ month }: { month: string }) {
                               "block rounded px-1.5 py-1 text-xs leading-tight hover:ring-1 hover:ring-terracotta/40",
                               ORDER_STATUS_CLASS[entry.status],
                             )}
-                            title={`${entry.order_code} — ${entry.event_title ?? entry.customer_name}`}
+                            title={`${entry.order_code}, ${entry.event_title ?? entry.customer_name}`}
                           >
                             <span className="block truncate font-medium">{entry.order_code}</span>
                             <span className="block truncate opacity-80">

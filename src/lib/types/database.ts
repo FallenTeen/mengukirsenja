@@ -246,6 +246,26 @@ export type Database = {
         };
         Returns: string;
       };
+      /**
+       * The single write a customer owns: `awaiting_customer_confirmation` ->
+       * `confirmed` on an order their own session owns. Returns an outcome code
+       * instead of raising, so the portal can tell "already confirmed" apart from
+       * "not your order": `confirmed` | `already_confirmed` | `cancelled` |
+       * `not_awaiting` | `no_customer` | `not_found`.
+       */
+      confirm_customer_order: {
+        Args: { p_order_id: string };
+        Returns: string;
+      };
+      /**
+       * Self-service profile edit. Writes name, phone, and address on the
+       * caller's own customer row and nothing else, email stays put because it
+       * is the key the guest -> account link is built on.
+       */
+      update_customer_profile: {
+        Args: { p_name: string; p_phone: string; p_address: string };
+        Returns: undefined;
+      };
     };
     Enums: {
       profile_role: ProfileRole;

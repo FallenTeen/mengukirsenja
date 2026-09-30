@@ -10,7 +10,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Tentang",
   description:
-    "Mengukir Senja Decoration — studio dekorasi pernikahan dengan layanan pendukung dari partner pilihan.",
+    "Mengukir Senja Decoration, studio dekorasi pernikahan dengan layanan pendukung dari partner pilihan.",
 };
 
 const values = [

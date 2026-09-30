@@ -4,6 +4,7 @@ import { Clock, Mail, MapPin, MessageCircle } from "lucide-react";
 import { PageIntro } from "@/components/site/page-intro";
 import { Section } from "@/components/site/section";
 import { Button } from "@/components/ui/button";
+import { STUDIO } from "@/lib/studio";
 
 export const metadata: Metadata = {
   title: "Kontak",
@@ -14,15 +15,15 @@ export const metadata: Metadata = {
  * Contact details are intentionally rendered from these constants rather than
  * the database, because they must stay readable even when every content query
  * is loading. Replace the placeholders with the real studio details before
- * launch — nothing else needs to change.
+ * launch: nothing else needs to change.
  */
 const CONTACT = {
   whatsappLabel: "Klik untuk chat",
-  whatsappNumber: "6280000000000",
-  email: "halo@mengukirsenja.id",
-  address: "Lokasi studio akan diumumkan di sini.",
-  hours: "Senin–Sabtu, 09.00–18.00 WIB",
-  responseTime: "Balasan biasanya dalam 1×24 jam pada jam kerja.",
+  whatsappNumber: STUDIO.whatsappNumber,
+  email: STUDIO.email,
+  address: STUDIO.address,
+  hours: STUDIO.hours,
+  responseTime: STUDIO.responseTime,
 };
 
 function waLink(number: string, text: string): string {
@@ -54,7 +55,7 @@ export default function ContactPage() {
               <span className="grid gap-1">
                 <span className="text-lg">WhatsApp</span>
                 <span className="text-sm text-muted-foreground">
-                  {CONTACT.whatsappLabel} — balasan tercepat.
+                  {CONTACT.whatsappLabel}, balasan tercepat.
                 </span>
                 <span className="mt-1 text-sm text-terracotta underline-offset-4 group-hover:underline">
                   Mulai percakapan

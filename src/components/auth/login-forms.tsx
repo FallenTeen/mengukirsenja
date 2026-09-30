@@ -30,8 +30,20 @@ export function LoginForms({
   const [admin, adminAction, adminPending] = useActionState(signInAdmin, initialState);
 
   return (
-    <div className="grid w-full max-w-4xl gap-6 md:grid-cols-2">
-      <Card className="gap-6 rounded-none py-6">
+    <div className="grid w-full max-w-4xl gap-6">
+      {/* The auth callback sends failures back here without saying which card was
+          in play, so it belongs above both forms rather than inside one of them. */}
+      {initialError ? (
+        <p
+          role="alert"
+          className="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          {initialError}
+        </p>
+      ) : null}
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="gap-6 rounded-none py-6">
         <CardHeader>
           <CardTitle className="font-display text-2xl">Customer Portal</CardTitle>
           <CardDescription>
@@ -105,11 +117,6 @@ export function LoginForms({
                 required
               />
             </div>
-            {initialError ? (
-              <p role="alert" className="text-sm text-destructive">
-                {initialError}
-              </p>
-            ) : null}
             {admin.error ? (
               <p role="alert" className="text-sm text-destructive">
                 {admin.error}
@@ -126,6 +133,7 @@ export function LoginForms({
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

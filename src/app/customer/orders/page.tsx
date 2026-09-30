@@ -3,13 +3,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { PageIntro } from "@/components/site/page-intro";
-import { formatRupiah } from "@/lib/format";
+import { formatDate, formatRupiah } from "@/lib/format";
 import { toNumber } from "@/lib/order-status";
 import { getCustomerOrders } from "@/lib/queries/customer-orders";
 
 export const metadata: Metadata = { title: "Pesanan Saya" };
 
-/** Read side of Phase 4: the admin's magic link needs a real destination. */
+/** Every order the signed-in customer owns, newest event first. RLS scopes the list. */
 export default async function CustomerOrdersPage() {
   const orders = await getCustomerOrders();
 
@@ -37,15 +37,28 @@ export default async function CustomerOrdersPage() {
                   </div>
                   <p className="font-medium">{order.event_title || "Belum ada judul acara"}</p>
                   <p className="text-xs text-muted-foreground">
-                    {[order.event_date, order.venue_name].filter(Boolean).join(" · ") || "Detail menyusul"}
+                    {[formatDate(order.event_date), order.venue_name]
+                      .filter(Boolean)
+                      .join(" · ") || "Detail menyusul"}
                   </p>
+                  {order.main_item_name ? (
+                    <p className="text-xs text-muted-foreground">
+                      Paket: {order.main_item_name}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="grid justify-items-end gap-2">
                   <span className="font-medium tabular-nums">
                     {formatRupiah(toNumber(order.total_estimate))}
                   </span>
-                  <Button size="sm" variant="outline" render={<Link href={`/customer/orders/${order.id}`} />}>
-                    Lihat rincian
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    render={<Link href={`/customer/orders/${order.id}`} />}
+                  >
+                    {order.status === "awaiting_customer_confirmation"
+                      ? "Lihat & konfirmasi"
+                      : "Lihat rincian"}
                   </Button>
                 </div>
               </div>

@@ -53,9 +53,7 @@ export default async function PortfolioPage({ searchParams }: PageProps<"/portfo
         <p className="mt-6 text-sm text-muted-foreground">
           Menampilkan{" "}
           <strong className="font-medium text-foreground">{activeServiceName}</strong>
-          {isDecoration
-            ? ` — ${decorationCount} dokumentasi dekorasi.`
-            : ` — dokumentasi layanan partner.`}
+          {isDecoration ? `, ${decorationCount} dokumentasi dekorasi.` : ", dokumentasi layanan partner."}
         </p>
       ) : null}
 

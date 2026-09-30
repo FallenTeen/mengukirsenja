@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default: "Mengukir Senja Decoration",
-    template: "%s — Mengukir Senja Decoration",
+    template: "%s | Mengukir Senja Decoration",
   },
   description:
     "Mengukir Senja Decoration. Dekorasi Pernikahan dan layanan pendukung untuk acara Anda.",

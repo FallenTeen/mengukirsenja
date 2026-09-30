@@ -50,7 +50,9 @@ export function adminGreeting(customerName: string): string {
   return `Halo ${customerName}, saya admin dari Mengukir Senja Decoration.`;
 }
 
-/** Sent when the studio is ready for the customer to approve the breakdown. */
+/**
+ * Sent when the studio is ready for the customer to approve the breakdown.
+ */
 export function requestOrderConfirmationMessage({
   customerName,
   orderCode,
@@ -74,6 +76,25 @@ export function requestOrderConfirmationMessage({
     `Estimasi total ${rupiah}.`,
     `Rinciannya bisa Anda lihat di ${portalUrl}.`,
     "Beri tahu kami lewat WhatsApp ini bila ada yang ingin ditanyakan.",
+  ].join(" ");
+}
+
+/**
+ * The customer writing first, from the portal. Carries the three facts the studio
+ * needs to identify the conversation: who, which order, which date.
+ */
+export function customerToStudioMessage({
+  customerName,
+  orderCode,
+  eventDate,
+}: {
+  customerName: string;
+  orderCode: string;
+  eventDate?: string | null;
+}) {
+  return [
+    `Halo, saya ${customerName} dari Mengukir Senja Decoration.`,
+    `Saya ingin mendiskusikan pesanan ${orderCode}${eventDate ? ` untuk acara tanggal ${eventDate}` : ""}.`,
   ].join(" ");
 }
 

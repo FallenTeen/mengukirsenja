@@ -411,6 +411,9 @@ export async function saveCustomer(
 
   revalidatePath("/admin/customers");
   revalidatePath(`/admin/customers/${input.id}`);
+  // The same row is the customer's own profile in the portal.
+  revalidatePath("/customer", "layout");
+  revalidatePath("/customer/profile", "page");
   return { message: "Data customer disimpan." };
 }
 

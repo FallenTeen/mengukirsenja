@@ -146,7 +146,7 @@ export default async function AdminOrderPage({
                 <User data-icon="inline-start" className="text-muted-foreground" />
                 <div className="grid gap-0.5">
                   <dt className="text-xs text-muted-foreground">Customer</dt>
-                  <dd>{customer?.name ?? "—"}</dd>
+                  <dd>{customer?.name ?? "Data customer tidak ada"}</dd>
                   {customer?.email ? (
                     <dd className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Mail data-icon="inline-start" className="size-3" />
@@ -160,7 +160,7 @@ export default async function AdminOrderPage({
                 <CalendarDays data-icon="inline-start" className="text-muted-foreground" />
                 <div className="grid gap-0.5">
                   <dt className="text-xs text-muted-foreground">Tanggal acara</dt>
-                  <dd>{order.event_date ?? "—"}</dd>
+                  <dd>{order.event_date ?? "Belum ditentukan"}</dd>
                 </div>
               </div>
 
@@ -168,7 +168,7 @@ export default async function AdminOrderPage({
                 <MapPin data-icon="inline-start" className="text-muted-foreground" />
                 <div className="grid gap-0.5">
                   <dt className="text-xs text-muted-foreground">Lokasi</dt>
-                  <dd>{order.venue_name || "—"}</dd>
+                  <dd>{order.venue_name || "Belum diisi"}</dd>
                   {order.venue_address ? (
                     <dd className="text-xs text-muted-foreground">{order.venue_address}</dd>
                   ) : null}

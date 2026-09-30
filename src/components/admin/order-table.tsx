@@ -67,7 +67,9 @@ export function OrderTable({ orders }: { orders: OrderListEntry[] }) {
                 </div>
               </TableCell>
 
-              <TableCell className="whitespace-nowrap">{order.customer?.name ?? "—"}</TableCell>
+                <TableCell className="whitespace-nowrap">
+                  {order.customer?.name ?? "Tanpa nama"}
+                </TableCell>
 
               <TableCell className="whitespace-nowrap">
                 <div className="grid gap-0.5">
