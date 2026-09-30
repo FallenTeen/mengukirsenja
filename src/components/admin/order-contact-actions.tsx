@@ -27,6 +27,7 @@ export function OrderContactActions({
   customerName,
   phone,
   eventDate,
+  eventEndDate,
   totalEstimate,
   hasEmail,
 }: {
@@ -35,6 +36,7 @@ export function OrderContactActions({
   customerName: string;
   phone: string | null;
   eventDate: string | null;
+  eventEndDate?: string | null;
   totalEstimate: number;
   hasEmail: boolean;
 }) {
@@ -63,7 +65,9 @@ export function OrderContactActions({
           size="sm"
           variant="outline"
           disabled={!canMessage}
-          onClick={() => open(adminToCustomerMessage({ customerName, orderCode, eventDate }))}
+            onClick={() =>
+              open(adminToCustomerMessage({ customerName, orderCode, eventDate, eventEndDate }))
+            }
         >
           <MessageCircle data-icon="inline-start" />
           Diskusikan Pesanan

@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
-import type { OrderStatus } from "@/lib/types/database";
+import type { OrderStatus, ReferenceImage } from "@/lib/types/database";
 
 /**
  * Customer-facing order reads. Everything goes through the `customer_orders`
@@ -14,9 +14,13 @@ export type CustomerOrderSummary = {
   status: OrderStatus;
   event_title: string | null;
   event_date: string | null;
+  /** NULL means a one-day event, i.e. every order from before the migration. */
+  event_end_date: string | null;
   venue_name: string | null;
   venue_address: string | null;
   customer_note: string | null;
+  services_of_interest: string[];
+  reference_images: ReferenceImage[];
   total_estimate: number | string;
   customer_confirmed_at: string | null;
   /** Name of the first customer-visible line, standing in for "main service". */

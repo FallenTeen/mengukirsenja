@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/admin/status-badge";
+import { CustomerWhatsAppButton } from "@/components/customer/customer-whatsapp-button";
 import { PageIntro } from "@/components/site/page-intro";
-import { formatDate, formatRupiah } from "@/lib/format";
+import { requireCustomer } from "@/lib/auth/session";
+import { formatDateRange, formatRupiah } from "@/lib/format";
 import { toNumber } from "@/lib/order-status";
 import { getCustomerOrders } from "@/lib/queries/customer-orders";
 
@@ -11,7 +13,11 @@ export const metadata: Metadata = { title: "Pesanan Saya" };
 
 /** Every order the signed-in customer owns, newest event first. RLS scopes the list. */
 export default async function CustomerOrdersPage() {
-  const orders = await getCustomerOrders();
+  const [{ customer }, orders] = await Promise.all([
+    requireCustomer("/customer/orders"),
+    getCustomerOrders(),
+  ]);
+  const customerName = customer?.name || "pelanggan";
 
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 py-16">
@@ -37,13 +43,26 @@ export default async function CustomerOrdersPage() {
                   </div>
                   <p className="font-medium">{order.event_title || "Belum ada judul acara"}</p>
                   <p className="text-xs text-muted-foreground">
-                    {[formatDate(order.event_date), order.venue_name]
+                    {[
+                      order.event_date ? formatDateRange(order.event_date, order.event_end_date) : null,
+                      order.venue_name,
+                    ]
                       .filter(Boolean)
                       .join(" · ") || "Detail menyusul"}
                   </p>
                   {order.main_item_name ? (
                     <p className="text-xs text-muted-foreground">
                       Paket: {order.main_item_name}
+                    </p>
+                  ) : null}
+                  {order.services_of_interest.length > 0 ? (
+                    <p className="text-xs text-muted-foreground">
+                      Dimintai: {order.services_of_interest.join(", ")}
+                    </p>
+                  ) : null}
+                  {order.reference_images.length > 0 ? (
+                    <p className="text-xs text-muted-foreground">
+                      {order.reference_images.length} gambar referensi
                     </p>
                   ) : null}
                 </div>
@@ -60,6 +79,12 @@ export default async function CustomerOrdersPage() {
                       ? "Lihat & konfirmasi"
                       : "Lihat rincian"}
                   </Button>
+                  <CustomerWhatsAppButton
+                    customerName={customerName}
+                    orderCode={order.order_code}
+                    context="menanyakan status pengajuan ini"
+                    label="Tanya status"
+                  />
                 </div>
               </div>
             </li>

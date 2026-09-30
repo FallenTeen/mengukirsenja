@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireUser } from "@/lib/auth/session";
+import { requireCustomerUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { customerProfileSchema } from "@/lib/validations/customer";
 import { orderTargetSchema } from "@/lib/validations/orders";
@@ -41,7 +41,7 @@ export async function confirmCustomerOrder(
   if (!parsed.success) return { error: "Pesanan tidak dikenal." };
   const { orderId } = parsed.data;
 
-  await requireUser(`/customer/orders/${orderId}`);
+  await requireCustomerUser(`/customer/orders/${orderId}`);
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("confirm_customer_order", {
     p_order_id: orderId,
@@ -94,7 +94,7 @@ export async function saveCustomerProfile(
     };
   }
 
-  await requireUser("/customer/profile");
+  await requireCustomerUser("/customer/profile");
   const supabase = await createClient();
   const { error } = await supabase.rpc("update_customer_profile", {
     p_name: parsed.data.name,

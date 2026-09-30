@@ -49,7 +49,7 @@ export default async function RequestSuccessPage({ searchParams }: PageProps<"/r
           <Button variant="outline" render={<Link href="/portfolio" />}>
             Lihat Portfolio
           </Button>
-          <Button variant="ghost" render={<Link href="/login?next=/customer" />}>
+          <Button variant="ghost" render={<Link href="/portal" />}>
             Masuk ke Portal
           </Button>
         </div>

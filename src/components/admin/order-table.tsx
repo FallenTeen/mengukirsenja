@@ -1,4 +1,5 @@
-import { formatRupiah } from "@/lib/format";
+import Link from "next/link";
+import { formatDateRange, formatRupiah } from "@/lib/format";
 import { ORDER_SOURCE_LABEL, toNumber } from "@/lib/order-status";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,11 @@ import type { OrderListEntry } from "@/lib/queries/admin-orders";
  * Read-only on purpose: the list answers "which order needs attention", and
  * every edit happens inside the order workspace. Server component, so it costs
  * no client JS beyond the links.
+ *
+ * Two renderings of the same data. Five columns of currency, dates, and status
+ * are unreadable at 360px, so below `md` each order becomes a card with the
+ * status, who it is for, and the total already visible; the table takes over
+ * where there is room for it.
  */
 export function OrderTable({ orders }: { orders: OrderListEntry[] }) {
   if (orders.length === 0) {
@@ -27,8 +33,44 @@ export function OrderTable({ orders }: { orders: OrderListEntry[] }) {
   }
 
   return (
-    <div className="rounded-xl border">
-      <Table>
+    <>
+      <div className="grid gap-3 md:hidden">
+        {orders.map((order) => (
+          <article key={order.id} className="grid gap-3 rounded-xl border bg-card p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="grid gap-0.5">
+                <span className="font-mono text-sm">{order.order_code}</span>
+                <span className="text-xs text-muted-foreground">
+                  {ORDER_SOURCE_LABEL[order.source]}
+                </span>
+              </div>
+              <StatusBadge status={order.status} />
+            </div>
+
+            <div className="grid gap-0.5">
+              <span className="text-sm font-medium">{order.customer?.name ?? "Tanpa nama"}</span>
+              <span className="text-sm">
+                {order.event_title || order.venue_name || "Belum diisi"}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {formatDateRange(order.event_date, order.event_end_date)}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 border-t pt-3">
+              <span className="font-medium tabular-nums">
+                {formatRupiah(toNumber(order.total_estimate))}
+              </span>
+              <Button size="sm" variant="outline" render={<Link href={`/admin/orders/${order.id}`} />}>
+                Buka pesanan
+              </Button>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="hidden rounded-xl border md:block">
+        <Table>
         <TableHeader className="bg-muted/40">
           <TableRow>
             <TableHead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
@@ -75,7 +117,7 @@ export function OrderTable({ orders }: { orders: OrderListEntry[] }) {
                 <div className="grid gap-0.5">
                   <span>{order.event_title || order.venue_name || "Belum diisi"}</span>
                   <span className="text-xs text-muted-foreground">
-                    {order.event_date ?? "Tanpa tanggal"}
+                    {formatDateRange(order.event_date, order.event_end_date)}
                   </span>
                 </div>
               </TableCell>
@@ -90,7 +132,8 @@ export function OrderTable({ orders }: { orders: OrderListEntry[] }) {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
-    </div>
+        </Table>
+      </div>
+    </>
   );
 }

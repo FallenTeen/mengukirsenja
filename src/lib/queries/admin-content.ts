@@ -193,7 +193,12 @@ export type DashboardCounts = {
   portfolioItems: number;
   customers: number;
   ordersWaiting: number;
-  upcomingOrders: { order_code: string; status: Order["status"]; event_date: string | null }[];
+  upcomingOrders: {
+    order_code: string;
+    status: Order["status"];
+    event_date: string | null;
+    event_end_date: string | null;
+  }[];
 };
 
 /** Head-only counts, so the dashboard does not pull whole tables. */
@@ -210,7 +215,7 @@ export async function getDashboardCounts(): Promise<DashboardCounts> {
       .eq("status", "pending_admin_review"),
     supabase
       .from("orders")
-      .select("order_code, status, event_date")
+      .select("order_code, status, event_date, event_end_date")
       .in("status", ["pending_admin_review", "awaiting_customer_confirmation", "confirmed"])
       .not("event_date", "is", null)
       .gte("event_date", new Date().toISOString().slice(0, 10))

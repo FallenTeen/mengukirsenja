@@ -32,9 +32,22 @@ export const isAdmin = cache(async (): Promise<boolean> => {
   return (await getProfile(user.id))?.role === "admin";
 });
 
-export async function requireUser(nextPath = "/customer"): Promise<User> {
+/**
+ * Customer gate for the portal and its server actions.
+ *
+ * Two rules, both about *role* and not just about being signed in. A guest is
+ * sent to the passwordless portal instead of the admin sign-in page, and an
+ * admin is turned back to the panel: an admin account owns no customer record,
+ * so the portal would render an empty shell while its actions ran as nobody.
+ *
+ * The portal's data boundary is still RLS (`customers read own orders` keys off
+ * `current_customer_id()`), so this is a routing guard, not the authorization
+ * boundary.
+ */
+export async function requireCustomerUser(nextPath = "/customer"): Promise<User> {
   const user = await getUser();
-  if (!user) redirect(`/login?next=${encodeURIComponent(nextPath)}`);
+  if (!user) redirect(`/portal?next=${encodeURIComponent(nextPath)}`);
+  if ((await getProfile(user.id))?.role === "admin") redirect("/admin");
   return user;
 }
 
@@ -59,6 +72,6 @@ export async function requireAdmin(nextPath = "/admin"): Promise<{ user: User; p
 export async function requireCustomer(
   nextPath = "/customer",
 ): Promise<{ user: User; customer: Customer | null }> {
-  const user = await requireUser(nextPath);
+  const user = await requireCustomerUser(nextPath);
   return { user, customer: await getCustomer(user.id) };
 }

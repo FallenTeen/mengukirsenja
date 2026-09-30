@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, CheckCircle2, MapPin, Sparkles, XCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CheckCircle2,
+  Images,
+  MapPin,
+  Sparkles,
+  XCircle,
+} from "lucide-react";
 import { PageIntro, SectionLabel } from "@/components/site/page-intro";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { ConfirmOrderButton } from "@/components/customer/confirm-order-button";
 import { CustomerWhatsAppButton } from "@/components/customer/customer-whatsapp-button";
+import { ReferenceGallery, ServicesOfInterest } from "@/components/order/intake-details";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -16,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { requireCustomer } from "@/lib/auth/session";
-import { formatDate, formatRupiah } from "@/lib/format";
+import { formatDate, formatDateRange, formatRupiah } from "@/lib/format";
 import { toNumber } from "@/lib/order-status";
 import { getCustomerOrder } from "@/lib/queries/customer-orders";
 
@@ -70,7 +79,7 @@ export default async function CustomerOrderPage({ params }: PageProps<"/customer
           <CalendarDays data-icon="inline-start" className="text-muted-foreground" />
           <div className="grid gap-0.5">
             <dt className="text-xs text-muted-foreground">Tanggal acara</dt>
-            <dd>{formatDate(order.event_date) ?? "Belum ditentukan"}</dd>
+            <dd>{formatDateRange(order.event_date, order.event_end_date)}</dd>
           </div>
         </div>
         <div className="flex items-start gap-2">
@@ -83,6 +92,30 @@ export default async function CustomerOrderPage({ params }: PageProps<"/customer
             ) : null}
           </div>
         </div>
+
+        {order.services_of_interest.length > 0 ? (
+          <div className="flex items-start gap-2">
+            <Sparkles data-icon="inline-start" className="text-muted-foreground" />
+            <div className="grid gap-0.5">
+              <dt className="text-xs text-muted-foreground">Layanan yang diminati</dt>
+              <dd>
+                <ServicesOfInterest services={order.services_of_interest} />
+              </dd>
+            </div>
+          </div>
+        ) : null}
+
+        {order.reference_images.length > 0 ? (
+          <div className="flex items-start gap-2">
+            <Images data-icon="inline-start" className="text-muted-foreground" />
+            <div className="grid gap-0.5">
+              <dt className="text-xs text-muted-foreground">Referensi</dt>
+              <dd>
+                <ReferenceGallery images={order.reference_images} />
+              </dd>
+            </div>
+          </div>
+        ) : null}
       </dl>
 
       <section className="grid gap-4">
@@ -186,7 +219,7 @@ export default async function CustomerOrderPage({ params }: PageProps<"/customer
           <CustomerWhatsAppButton
             customerName={customerName}
             orderCode={order.order_code}
-            eventDate={order.event_date}
+            context="menanyakan detail pesanan ini"
           />
         </div>
       </section>

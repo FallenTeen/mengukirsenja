@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, Mail, MapPin, User } from "lucide-react";
+import { ArrowLeft, CalendarDays, Images, Mail, MapPin, Sparkles, User } from "lucide-react";
 import { OrderContactActions } from "@/components/admin/order-contact-actions";
 import { OrderCustomerForm, OrderEventForm } from "@/components/admin/order-form";
 import { OrderItemsPanel } from "@/components/admin/order-items";
 import { CancelOrderButton, OrderStatusForm } from "@/components/admin/order-status-form";
 import { StatusBadge } from "@/components/admin/status-badge";
+import { ReferenceGallery, ServicesOfInterest } from "@/components/order/intake-details";
 import { PageIntro } from "@/components/site/page-intro";
 import { Button } from "@/components/ui/button";
-import { formatRupiah } from "@/lib/format";
+import { formatDateRange, formatRupiah } from "@/lib/format";
 import { ORDER_SOURCE_LABEL, toNumber } from "@/lib/order-status";
 import { getAdminOrder, getOrderFormOptions } from "@/lib/queries/admin-orders";
 
@@ -132,6 +133,7 @@ export default async function AdminOrderPage({
                 customerName={customer.name ?? "Customer"}
                 phone={customer.phone}
                 eventDate={order.event_date}
+                eventEndDate={order.event_end_date}
                 totalEstimate={toNumber(order.total_estimate)}
                 hasEmail={Boolean(customer.email)}
               />
@@ -160,9 +162,33 @@ export default async function AdminOrderPage({
                 <CalendarDays data-icon="inline-start" className="text-muted-foreground" />
                 <div className="grid gap-0.5">
                   <dt className="text-xs text-muted-foreground">Tanggal acara</dt>
-                  <dd>{order.event_date ?? "Belum ditentukan"}</dd>
+                  <dd>{formatDateRange(order.event_date, order.event_end_date)}</dd>
                 </div>
               </div>
+
+              {order.services_of_interest.length > 0 ? (
+                <div className="flex items-start gap-2">
+                  <Sparkles data-icon="inline-start" className="text-muted-foreground" />
+                  <div className="grid gap-0.5">
+                    <dt className="text-xs text-muted-foreground">Layanan yang diminati</dt>
+                    <dd>
+                      <ServicesOfInterest services={order.services_of_interest} />
+                    </dd>
+                  </div>
+                </div>
+              ) : null}
+
+              {order.reference_images.length > 0 ? (
+                <div className="flex items-start gap-2">
+                  <Images data-icon="inline-start" className="text-muted-foreground" />
+                  <div className="grid gap-0.5">
+                    <dt className="text-xs text-muted-foreground">Referensi</dt>
+                    <dd>
+                      <ReferenceGallery images={order.reference_images} />
+                    </dd>
+                  </div>
+                </div>
+              ) : null}
 
               <div className="flex items-start gap-2">
                 <MapPin data-icon="inline-start" className="text-muted-foreground" />

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Package, Sparkles, TriangleAlert, Users } from "lucide-react";
 import { PageIntro } from "@/components/site/page-intro";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/format";
+import { formatDateRange } from "@/lib/format";
 import { ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { getDashboardCounts } from "@/lib/queries/admin-content";
 import type { OrderStatus } from "@/lib/types/database";
@@ -30,7 +30,7 @@ export default async function AdminDashboardPage() {
       <PageIntro
         label="Admin"
         title="Dashboard"
-        description="Ringkasan isi website dan pesanan yang perlu ditangani. Manage pesanan lengkapnya tersedia di Fase 4."
+        description="Ringkasan isi website dan pesanan yang perlu ditangani."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -74,7 +74,7 @@ export default async function AdminDashboardPage() {
                   {ORDER_STATUS_LABEL[order.status as OrderStatus] ?? order.status}
                 </Badge>
                 <span className="ml-auto text-sm text-muted-foreground">
-                  {formatDate(order.event_date) ?? "Tanggal belum ditentukan"}
+                  {formatDateRange(order.event_date, order.event_end_date)}
                 </span>
               </li>
             ))}

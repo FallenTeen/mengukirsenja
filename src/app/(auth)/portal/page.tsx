@@ -1,41 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { AdminLoginForm } from "@/components/auth/admin-login-form";
+import { PortalLoginForm } from "@/components/auth/portal-login-form";
 import { safeNextPath } from "@/lib/auth/next-path";
 import { getProfile, getUser } from "@/lib/auth/session";
 
-export const metadata: Metadata = { title: "Masuk Admin" };
+export const metadata: Metadata = { title: "Masuk Portal" };
 
 /**
- * Admin-only sign-in. Customers have their own passwordless page at `/portal`,
- * so this one carries the password form and nothing else. `next` only survives
- * `safeNextPath`, which keeps it on this origin, and a signed-in customer is
- * pushed to their portal rather than into the admin area.
+ * Customer sign-in, separate from `/login` so a link in an email lands straight
+ * on the passwordless form. An admin who opens this page is sent to the admin
+ * panel instead of being asked for a password they did not come here to type.
  */
-export default async function LoginPage(props: PageProps<"/login">) {
+export default async function PortalPage(props: PageProps<"/portal">) {
   const params = await props.searchParams;
-  const nextPath = safeNextPath(params.next, "/admin");
+  const nextPath = safeNextPath(params.next, "/customer");
 
   const user = await getUser();
   if (user) {
     const role = (await getProfile(user.id))?.role;
-    // A signed-in customer has no business here, so send them to their portal.
-    redirect(role === "admin" ? nextPath : "/customer");
+    redirect(role === "admin" ? "/admin" : nextPath);
   }
 
   return (
     <div className="grid w-full gap-10">
       <div className="grid justify-items-center gap-3 text-center">
         <p className="text-xs uppercase tracking-[0.35em] text-terracotta">Mengukir Senja</p>
-        <h1 className="font-display text-4xl md:text-5xl">Masuk admin</h1>
+        <h1 className="font-display text-4xl md:text-5xl">Portal pelanggan</h1>
         <p className="max-w-md text-sm text-muted-foreground">
-          Area khusus pengelola. Pelanggan tidak perlu akun untuk mengajukan pesanan, dan masuk ke
-          portal lewat tautan ke email.
+          Pesanan tetap bisa dibuat tanpa akun. Akun hanya diperlukan untuk membuka detail pesanan
+          Anda.
         </p>
       </div>
 
-      <AdminLoginForm
+      <PortalLoginForm
         nextPath={nextPath}
         initialError={typeof params.error === "string" ? params.error : undefined}
       />

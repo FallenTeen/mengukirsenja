@@ -6,7 +6,7 @@ import { CustomerWhatsAppButton } from "@/components/customer/customer-whatsapp-
 import { PageIntro, SectionLabel } from "@/components/site/page-intro";
 import { Button } from "@/components/ui/button";
 import { requireCustomer } from "@/lib/auth/session";
-import { formatDate, formatRupiah } from "@/lib/format";
+import { formatDateRange, formatRupiah } from "@/lib/format";
 import { toNumber } from "@/lib/order-status";
 import { getCustomerOrders, pickFeaturedOrder } from "@/lib/queries/customer-orders";
 import { STUDIO } from "@/lib/studio";
@@ -64,7 +64,7 @@ export default async function CustomerOverviewPage() {
                 <CalendarDays className="mt-0.5 size-4 shrink-0 text-terracotta" aria-hidden />
                 <div className="grid gap-0.5">
                   <dt className="text-xs text-muted-foreground">Tanggal</dt>
-                  <dd>{formatDate(featured.event_date) ?? "Belum ditentukan"}</dd>
+                  <dd>{formatDateRange(featured.event_date, featured.event_end_date)}</dd>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
@@ -96,7 +96,7 @@ export default async function CustomerOverviewPage() {
               <CustomerWhatsAppButton
                 customerName={name}
                 orderCode={featured.order_code}
-                eventDate={featured.event_date}
+                context="membahas detail acara saya"
               />
             </div>
           </article>
@@ -122,7 +122,7 @@ export default async function CustomerOverviewPage() {
                   >
                     <span className="font-mono text-sm">{order.order_code}</span>
                     <span className="text-sm text-muted-foreground">
-                      {formatDate(order.event_date) ?? "Tanggal belum ditentukan"}
+                      {formatDateRange(order.event_date, order.event_end_date)}
                     </span>
                     <StatusBadge status={order.status} className="ml-auto" />
                   </Link>

@@ -38,7 +38,7 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/login" className="hover:text-foreground">
+              <Link href="/portal" className="hover:text-foreground">
                 Masuk
               </Link>
             </li>

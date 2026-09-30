@@ -2,35 +2,35 @@
 
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { buildWhatsAppLink, customerToStudioMessage } from "@/lib/whatsapp";
-import { STUDIO } from "@/lib/studio";
+import { buildCustomerWhatsAppLink } from "@/lib/whatsapp";
 
 /**
  * "Discuss via WhatsApp", from the customer's side of the portal. There is no
- * internal chat in V1: the message simply hands the conversation to WhatsApp with
- * the order context already written into it. Rendering as an <a> on purpose, a
- * deep link must not depend on JavaScript having hydrated.
+ * internal chat: the button hands the conversation to WhatsApp with the order
+ * context already written into it, and `context` lets each screen say what the
+ * question is actually about. Rendering as an <a> on purpose, a deep link must
+ * not depend on JavaScript having hydrated.
  */
 export function CustomerWhatsAppButton({
   customerName,
   orderCode,
-  eventDate,
+  context,
+  label = "Diskusikan via WhatsApp",
 }: {
   customerName: string;
-  orderCode: string;
-  eventDate?: string | null;
+  orderCode?: string | null;
+  /** Verb phrase completing "saya {nama} dengan {kode} ingin ...". */
+  context: string;
+  label?: string;
 }) {
-  const link = buildWhatsAppLink(
-    STUDIO.whatsappNumber,
-    customerToStudioMessage({ customerName, orderCode, eventDate }),
-  );
+  const link = buildCustomerWhatsAppLink({ customerName, orderCode, context });
 
   if (!link) return null;
 
   return (
     <Button variant="outline" render={<a href={link} target="_blank" rel="noopener noreferrer" />}>
       <MessageCircle data-icon="inline-start" />
-      Diskusikan via WhatsApp
+      {label}
     </Button>
   );
 }

@@ -6,7 +6,11 @@ export default async function CustomerLayout({ children }: LayoutProps<"/">) {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <CustomerNav name={customer?.name ?? null} email={user.email ?? null} />
+      <CustomerNav
+        name={customer?.name ?? null}
+        email={user.email ?? null}
+        message={`Halo kak, saya ${customer?.name || "pelanggan"} ingin membahas detail acara saya.`}
+      />
       <main className="flex-1">{children}</main>
     </div>
   );

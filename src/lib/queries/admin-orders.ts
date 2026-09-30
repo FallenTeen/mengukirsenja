@@ -124,6 +124,8 @@ export type CalendarEntry = {
   order_code: string;
   status: OrderStatus;
   event_date: string;
+  /** NULL on pre-finalization orders, which are all one-day events. */
+  event_end_date: string | null;
   event_title: string | null;
   customer_name: string;
   /** Comma-joined service names, for the compact calendar chip. */
@@ -133,6 +135,11 @@ export type CalendarEntry = {
 /**
  * One month window as `YYYY-MM-DD` bounds, so the calendar needs a single
  * range query instead of a count query per cell.
+ *
+ * A multi-day event is not stored once per day, so the filter asks for anything
+ * that *overlaps* the window: it starts on or before the last day and ends on or
+ * after the first. A NULL end is a one-day event that can only overlap on its
+ * start date, which the `is.null` branch covers.
  */
 export async function getCalendarEntries(
   from: string,
@@ -142,10 +149,10 @@ export async function getCalendarEntries(
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, order_code, status, event_date, event_title, customers ( name ), order_items ( services ( name ) )",
+      "id, order_code, status, event_date, event_end_date, event_title, customers ( name ), order_items ( services ( name ) )",
     )
-    .gte("event_date", from)
     .lte("event_date", to)
+    .or(`event_end_date.is.null,event_end_date.gte.${from}`)
     .order("event_date", { ascending: true });
 
   if (error) throw new Error(`Gagal memuat kalender: ${error.message}`);
@@ -162,6 +169,7 @@ export async function getCalendarEntries(
       order_code: row.order_code,
       status: row.status as OrderStatus,
       event_date: row.event_date as string,
+      event_end_date: (row.event_end_date as string | null) ?? null,
       event_title: row.event_title,
       customer_name: (row.customers as { name: string } | null)?.name ?? "Tanpa nama",
       service_summary: names.join(", "),

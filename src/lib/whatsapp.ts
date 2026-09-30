@@ -3,6 +3,9 @@
  * to the WhatsApp app through wa.me.
  */
 
+import { formatDateRangeShort } from "@/lib/format";
+import { STUDIO } from "@/lib/studio";
+
 /**
  * Normalizes an Indonesian phone number to the bare international digits
  * wa.me expects. Local `08` becomes `628`, `+62` and `62` are kept as they are.
@@ -25,19 +28,24 @@ export function buildWhatsAppLink(
   return number ? `https://wa.me/${number}?text=${encodeURIComponent(message)}` : null;
 }
 
-/** Opening line the admin sends to a customer, contextual to their order. */
+/**
+ * Opening line the admin sends to a customer, contextual to their order. A
+ * multi-day event reads as a range, so "12 Oktober 2026 s.d. 14 Oktober 2026".
+ */
 export function adminToCustomerMessage({
   customerName,
   orderCode,
   eventDate,
+  eventEndDate,
 }: {
   customerName: string;
   orderCode?: string | null;
   eventDate?: string | null;
+  eventEndDate?: string | null;
 }) {
   const subject = [
     orderCode ? `pesanan ${orderCode}` : null,
-    eventDate ? `untuk acara pada ${eventDate}` : null,
+    eventDate ? `untuk acara ${formatDateRangeShort(eventDate, eventEndDate)}` : null,
   ]
     .filter(Boolean)
     .join(" ");
@@ -80,21 +88,39 @@ export function requestOrderConfirmationMessage({
 }
 
 /**
- * The customer writing first, from the portal. Carries the three facts the studio
- * needs to identify the conversation: who, which order, which date.
+ * The customer writing first, from the portal. One shape for every entry point,
+ * so no screen invents its own opener: the studio identifies the conversation
+ * from the name plus the order code, and `context` is whatever the specific
+ * button is about ("menanyakan detail pesanan", "membahas detail acara saya").
+ *
+ * An order code is expected to be present; without one the message still names
+ * the sender rather than falling back to an empty "Halo, saya ingin bertanya".
  */
-export function customerToStudioMessage({
+export function buildCustomerWhatsAppMessage({
   customerName,
   orderCode,
-  eventDate,
+  context,
 }: {
   customerName: string;
-  orderCode: string;
-  eventDate?: string | null;
-}) {
-  return [
-    `Halo, saya ${customerName} dari Mengukir Senja Decoration.`,
-    `Saya ingin mendiskusikan pesanan ${orderCode}${eventDate ? ` untuk acara tanggal ${eventDate}` : ""}.`,
-  ].join(" ");
+  orderCode?: string | null;
+  /** What this particular button is about, written as a verb phrase. */
+  context: string;
+}): string {
+  const name = customerName.trim() || "pelanggan";
+  const subject = orderCode ? ` dengan ${orderCode}` : "";
+  return `Halo kak, saya ${name}${subject} ingin ${context}`;
+}
+
+/**
+ * The same message, already addressed to the studio's WhatsApp number. Null when
+ * no number is configured, so callers can hide the action instead of rendering a
+ * dead control.
+ */
+export function buildCustomerWhatsAppLink(options: {
+  customerName: string;
+  orderCode?: string | null;
+  context: string;
+}): string | null {
+  return buildWhatsAppLink(STUDIO.whatsappNumber, buildCustomerWhatsAppMessage(options));
 }
 

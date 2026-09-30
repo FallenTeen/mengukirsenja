@@ -6,7 +6,8 @@ import { CustomerForm } from "@/components/admin/customer-form";
 import { PageIntro } from "@/components/site/page-intro";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatDateRange } from "@/lib/format";
+import { ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { getAdminCustomer } from "@/lib/queries/admin-content";
 import { adminToCustomerMessage, buildWhatsAppLink, normalizePhone } from "@/lib/whatsapp";
 
@@ -75,9 +76,11 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
             {customer.orders.map((order) => (
               <li key={order.id} className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm">
                 <span className="font-mono">{order.order_code}</span>
-                <Badge variant="outline">{order.status}</Badge>
+                <Badge variant="outline">
+                  {ORDER_STATUS_LABEL[order.status] ?? order.status}
+                </Badge>
                 <span className="ml-auto text-muted-foreground">
-                  {formatDate(order.event_date) ?? "tanggal belum ditentukan"}
+                  {formatDateRange(order.event_date, order.event_end_date)}
                 </span>
               </li>
             ))}
