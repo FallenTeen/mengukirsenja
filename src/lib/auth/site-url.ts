@@ -26,7 +26,7 @@ export async function siteUrl(): Promise<string> {
   const origin = (await headers()).get("origin");
   if (origin) return stripTrailingSlash(origin);
 
-  return "http://localhost:3000";
+  return "https://mengukirsenja.vercel.app";
 }
 
 /** Absolute URL for an app-relative path, e.g. `/auth/callback?next=/customer`. */
