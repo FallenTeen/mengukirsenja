@@ -28,8 +28,11 @@ export function SiteHeader() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4 md:py-5">
         <Link href="/" className="flex shrink-0 items-center gap-3">
           <BrandLogo className="size-12" priority />
-          <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
-            Decoration
+          <span className="grid gap-0.5">
+            <span className="font-display text-lg leading-none">Mengukir Senja</span>
+            <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
+              Decoration
+            </span>
           </span>
         </Link>
 

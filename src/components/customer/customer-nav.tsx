@@ -30,8 +30,11 @@ export function CustomerNav({
       <div className="mx-auto flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 sm:gap-5 sm:px-6">
         <Link href="/customer" className="flex shrink-0 items-center gap-2">
           <BrandLogo className="size-10" priority />
-          <span className="text-[0.6rem] uppercase tracking-[0.16em] text-terracotta">
-            Customer Portal
+          <span className="grid gap-0.5">
+            <span className="font-display text-base leading-none">Mengukir Senja</span>
+            <span className="text-[0.6rem] uppercase tracking-[0.16em] text-terracotta">
+              Customer Portal
+            </span>
           </span>
         </Link>
 

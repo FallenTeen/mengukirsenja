@@ -14,7 +14,15 @@ export function SiteFooter() {
     <footer className="mt-24 border-t">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
         <div className="grid content-start justify-items-start gap-3">
-          <BrandLogo className="size-14" />
+          <div className="flex items-center gap-3">
+            <BrandLogo className="size-14" />
+            <span className="grid gap-0.5">
+              <span className="font-display text-lg leading-none">Mengukir Senja</span>
+              <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
+                Decoration
+              </span>
+            </span>
+          </div>
           <p className="max-w-xs text-sm text-muted-foreground">
             Dekorasi pernikahan yang hangat, rapi, dan dikerjakan dengan perhatian pada detail.
           </p>

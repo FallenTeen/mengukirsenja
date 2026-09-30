@@ -33,8 +33,11 @@ export function AdminNav({ name }: { name: string | null }) {
       <div className="grid gap-4 p-4 lg:gap-6 lg:p-5">
         <Link href="/admin" className="flex w-fit items-center gap-3">
           <BrandLogo className="size-12" priority />
-          <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
-            Admin
+          <span className="grid gap-0.5">
+            <span className="font-display text-lg leading-none">Mengukir Senja</span>
+            <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
+              Admin
+            </span>
           </span>
         </Link>
 
