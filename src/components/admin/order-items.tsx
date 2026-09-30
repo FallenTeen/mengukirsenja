@@ -52,6 +52,8 @@ export function OrderItemsPanel({
   partners: PartnerOption[];
   catalogItems: CatalogOption[];
 }) {
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+
   return (
     <div className="grid gap-4">
       {order.items.length === 0 ? (
@@ -147,14 +149,27 @@ export function OrderItemsPanel({
         </span>
       </div>
 
-      {/* Keyed on the item count so the form resets itself after a successful add. */}
-      <AddItemForm
-        key={order.item_count}
-        orderId={order.id}
-        services={services}
-        partners={partners}
-        catalogItems={catalogItems}
-      />
+      <div>
+        <Button
+          type="button"
+          variant="outline"
+          aria-expanded={isAddFormOpen}
+          onClick={() => setIsAddFormOpen((open) => !open)}
+        >
+          <Plus data-icon="inline-start" />
+          {isAddFormOpen ? "Tutup form" : "Tambah item"}
+        </Button>
+      </div>
+
+      {isAddFormOpen ? (
+        <AddItemForm
+          key={order.item_count}
+          orderId={order.id}
+          services={services}
+          partners={partners}
+          catalogItems={catalogItems}
+        />
+      ) : null}
     </div>
   );
 }
