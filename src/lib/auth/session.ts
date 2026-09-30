@@ -38,6 +38,16 @@ export async function requireUser(nextPath = "/customer"): Promise<User> {
   return user;
 }
 
+/**
+ * Admin gate, in three layers. `src/proxy.ts` turns away guests before the admin
+ * tree renders at all, this function turns away a signed-in user whose profile is
+ * not an admin, and the RLS policies underneath refuse the reads and writes
+ * regardless of what the browser asks for.
+ *
+ * Both denials leave nothing on screen: a guest is sent to the login page, and an
+ * authenticated non-admin is sent to the marketing home rather than an access
+ * error that would confirm the panel exists.
+ */
 export async function requireAdmin(nextPath = "/admin"): Promise<{ user: User; profile: Profile }> {
   const user = await getUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(nextPath)}`);

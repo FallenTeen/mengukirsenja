@@ -1,15 +1,28 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getActiveServices } from "@/lib/queries/public-content";
 import { createPublicClient } from "@/lib/supabase/public";
-import { orderRequestSchema } from "@/lib/validations/order-request";
+import { orderRequestSchema, parseReferenceImages } from "@/lib/validations/order-request";
 
 export type OrderRequestState = {
   error?: string;
   /** Field name -> first message, so each input can render its own error. */
   fieldErrors?: Record<string, string>;
-  values?: Record<string, string>;
+  /** Submitted text, so a rejected form comes back filled in. */
+  values?: Partial<
+    Record<
+      | "name"
+      | "email"
+      | "phone"
+      | "eventDate"
+      | "eventEndDate"
+      | "venueName"
+      | "venueAddress"
+      | "message"
+      | "catalogItemId",
+      string
+    >
+  >;
 };
 
 const text = (value: FormDataEntryValue | null): string =>
@@ -36,10 +49,13 @@ export async function submitOrderRequest(
     venueName: text(formData.get("venueName")),
     venueAddress: text(formData.get("venueAddress")),
     message: text(formData.get("message")),
-    preferredService: text(formData.get("preferredService")),
     catalogItemId: text(formData.get("catalogItemId")),
     source: text(formData.get("source")),
     website: text(formData.get("website")),
+    eventEndDate: text(formData.get("eventEndDate")),
+    dateMode: text(formData.get("dateMode")) || "single",
+    services: formData.getAll("services").map((value) => String(value)),
+    referenceImages: text(formData.get("referenceImages")),
   };
 
   const parsed = orderRequestSchema.safeParse(values);
@@ -58,16 +74,15 @@ export async function submitOrderRequest(
     redirect("/request/success");
   }
 
-  // The preferred service is a hint, not a scope or a price. The schema has no
-  // column for it, so fold it into the note the studio actually reads.
-  let note = input.message;
-  if (input.preferredService) {
-    const services = await getActiveServices();
-    const label = services.find((s) => s.slug === input.preferredService)?.name;
-    note = [note, `Layanan yang diminati: ${label ?? input.preferredService}.`]
-      .filter(Boolean)
-      .join("\n\n");
+  const references = parseReferenceImages(input.referenceImages);
+  if (references.error) {
+    return { error: references.error, fieldErrors: { referenceImages: references.error }, values };
   }
+
+  // A one-day event is stored as end = start so the column keeps one meaning.
+  // Services of interest are no longer folded into the note: they have a column of
+  // their own now, resolved to real service names inside the database.
+  const eventEndDate = input.dateMode === "range" ? (input.eventEndDate || input.eventDate) : input.eventDate;
 
   const supabase = createPublicClient();
   const { data, error } = await supabase.rpc("submit_order_request", {
@@ -75,11 +90,14 @@ export async function submitOrderRequest(
     p_email: input.email,
     p_phone: input.phone,
     p_event_date: input.eventDate,
+    p_event_end_date: eventEndDate,
     p_venue_name: input.venueName || null,
     p_venue_address: input.venueAddress || null,
-    p_customer_note: note || null,
+    p_customer_note: input.message || null,
     p_source: input.source,
     p_catalog_item_id: input.catalogItemId || null,
+    p_services_of_interest: input.services,
+    p_reference_images: references.images,
   });
 
   if (error || !data) {

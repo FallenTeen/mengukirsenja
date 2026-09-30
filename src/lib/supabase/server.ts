@@ -19,8 +19,10 @@ export async function createClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // Called from a Server Component. Safe to ignore because
-            // src/middleware.ts refreshes the session on every request.
+            // Called from a Server Component, where cookies are read-only. A
+            // guest hitting /admin is stopped by src/proxy.ts, and the role
+            // check in requireAdmin re-reads the session on every request, so
+            // nothing admin-related depends on this write landing here.
           }
         },
       },

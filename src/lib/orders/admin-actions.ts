@@ -97,23 +97,31 @@ function revalidateOrders(orderId?: string): void {
   }
 }
 
-/** Warns, never blocks: two events on one date is a real possibility. */
+/**
+ * Warns, never blocks: two events overlapping is a real possibility.
+ *
+ * Two ranges overlap when each one starts before the other ends. A legacy order
+ * with a NULL `event_end_date` is a one-day event, so it can only collide with
+ * the start date, which the `is.null` branch takes care of.
+ */
 async function conflictWarning(
   eventDate: string,
+  eventEndDate: string,
   excludeOrderId?: string,
 ): Promise<string | undefined> {
   const supabase = await adminClient();
   const { data, error } = await supabase
     .from("orders")
     .select("id, order_code")
-    .eq("event_date", eventDate)
+    .lte("event_date", eventEndDate)
+    .or(`event_end_date.is.null,event_end_date.gte.${eventDate}`)
     .in("status", ACTIVE_ORDER_STATUSES);
   if (error) return undefined;
 
   const others = (data ?? []).filter((row) => row.id !== excludeOrderId);
   if (others.length === 0) return undefined;
 
-  return `Perhatian: ${others.length} pesanan aktif lain sudah terjadwal pada tanggal ini (${others
+  return `Perhatian: ${others.length} pesanan aktif lain tumpang tindih dengan rentang tanggal ini (${others
     .map((row) => row.order_code)
     .join(", ")}). Pesanan tetap disimpan.`;
 }
@@ -138,6 +146,7 @@ export async function createManualOrder(
     address: text(formData, "address"),
     eventTitle: text(formData, "eventTitle"),
     eventDate: text(formData, "eventDate"),
+    eventEndDate: text(formData, "eventEndDate"),
     venueName: text(formData, "venueName"),
     venueAddress: text(formData, "venueAddress"),
     customerNote: text(formData, "customerNote"),
@@ -199,6 +208,7 @@ export async function createManualOrder(
       status: "draft",
       event_title: input.eventTitle || null,
       event_date: input.eventDate,
+      event_end_date: input.eventEndDate || input.eventDate,
       venue_name: input.venueName || null,
       venue_address: input.venueAddress || null,
       customer_note: input.customerNote || null,
@@ -219,6 +229,7 @@ export async function saveOrder(
   const values = {
     eventTitle: text(formData, "eventTitle"),
     eventDate: text(formData, "eventDate"),
+    eventEndDate: text(formData, "eventEndDate"),
     venueName: text(formData, "venueName"),
     venueAddress: text(formData, "venueAddress"),
     customerNote: text(formData, "customerNote"),
@@ -241,6 +252,7 @@ export async function saveOrder(
     .update({
       event_title: input.eventTitle || null,
       event_date: input.eventDate,
+      event_end_date: input.eventEndDate || input.eventDate,
       venue_name: input.venueName || null,
       venue_address: input.venueAddress || null,
       customer_note: input.customerNote || null,
@@ -249,7 +261,7 @@ export async function saveOrder(
     .eq("id", input.orderId);
   if (error) return { error: `Gagal menyimpan pesanan: ${error.message}`, values };
 
-  const warning = await conflictWarning(input.eventDate, input.orderId);
+  const warning = await conflictWarning(input.eventDate, input.eventEndDate || input.eventDate, input.orderId);
   revalidateOrders(input.orderId);
   return warning
     ? { warning, message: "Pesanan disimpan." }

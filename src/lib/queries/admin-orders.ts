@@ -18,7 +18,8 @@ import type {
 
 const ORDER_FIELDS = `
   id, order_code, customer_id, source, status, event_title, event_date,
-  venue_name, venue_address, customer_note, admin_note, total_estimate,
+  event_end_date, venue_name, venue_address, customer_note, admin_note,
+  services_of_interest, reference_images, total_estimate,
   customer_confirmed_at, admin_confirmed_at, created_by_user_id,
   created_at, updated_at,
   customers ( id, name, email, phone, address, auth_user_id )

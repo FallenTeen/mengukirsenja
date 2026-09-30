@@ -19,6 +19,22 @@ const eventDate = z
   .refine((value) => datePattern.test(value), "Tanggal acara tidak valid.")
   .refine((value) => value >= new Date().toISOString().slice(0, 10), "Tanggal acara sudah lewat.");
 
+/**
+ * End of a multi-day event. Optional because a one-day event has no end of its
+ * own, and the server then stores end = start so the column keeps one meaning.
+ * An event in the past cannot grow an end date, hence the check against today.
+ */
+const eventEndDate = z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine((value) => !value || datePattern.test(value), "Tanggal selesai tidak valid.")
+  .refine(
+    (value) => !value || value >= new Date().toISOString().slice(0, 10),
+    "Tanggal selesai tidak boleh sudah lewat.",
+  );
+
 const email = z
   .string()
   .trim()
@@ -57,14 +73,29 @@ export const orderCustomerSchema = z.object({
 });
 
 /** Event + note block. */
-export const orderEventSchema = z.object({
-  eventTitle: optionalText(160, "Judul acara terlalu panjang."),
-  eventDate,
-  venueName: optionalText(160, "Nama lokasi terlalu panjang."),
-  venueAddress: optionalText(400, "Alamat lokasi terlalu panjang."),
-  customerNote: optionalText(4000, "Catatan customer terlalu panjang."),
-  adminNote: optionalText(4000, "Catatan internal terlalu panjang."),
-});
+export const orderEventSchema = z
+  .object({
+    eventTitle: optionalText(160, "Judul acara terlalu panjang."),
+    eventDate,
+    eventEndDate,
+    venueName: optionalText(160, "Nama lokasi terlalu panjang."),
+    venueAddress: optionalText(400, "Alamat lokasi terlalu panjang."),
+    customerNote: optionalText(4000, "Catatan customer terlalu panjang."),
+    adminNote: optionalText(4000, "Catatan internal terlalu panjang."),
+  })
+  .refine((value) => !value.eventEndDate || value.eventEndDate >= value.eventDate, {
+    message: "Tanggal selesai tidak boleh lebih awal dari tanggal mulai.",
+    path: ["eventEndDate"],
+  })
+  .refine(
+    (value) =>
+      !value.eventEndDate ||
+      (new Date(`${value.eventEndDate}T00:00:00`).getTime() -
+        new Date(`${value.eventDate}T00:00:00`).getTime()) /
+        86_400_000 <=
+        30,
+    { message: "Rentang acara maksimal 31 hari.", path: ["eventEndDate"] },
+  );
 
 /** Creating a manual order: customer + event in one submit. */
 export const createManualOrderSchema = orderCustomerSchema.merge(orderEventSchema);

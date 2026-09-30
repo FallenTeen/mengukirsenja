@@ -33,6 +33,9 @@ export function OrderEventForm({ order }: { order: AdminOrderDetail }) {
         defaults={{
           eventTitle: order.event_title ?? "",
           eventDate: order.event_date ?? "",
+          eventEndDate: order.event_end_date && order.event_end_date !== order.event_date
+            ? order.event_end_date
+            : "",
           venueName: order.venue_name ?? "",
           venueAddress: order.venue_address ?? "",
           customerNote: order.customer_note ?? "",
@@ -252,7 +255,7 @@ function EventFields({
           />
         </Field>
 
-        <Field name="eventDate" label="Tanggal acara" required error={errors?.eventDate}>
+        <Field name="eventDate" label="Tanggal mulai acara" required error={errors?.eventDate}>
           <Input
             id="eventDate"
             name="eventDate"
@@ -260,6 +263,22 @@ function EventFields({
             required
             aria-invalid={Boolean(errors?.eventDate)}
             defaultValue={value("eventDate")}
+          />
+        </Field>
+
+        <Field
+          name="eventEndDate"
+          label="Tanggal selesai acara"
+          error={errors?.eventEndDate}
+          hint="Kosongkan untuk acara satu hari."
+        >
+          <Input
+            id="eventEndDate"
+            name="eventEndDate"
+            type="date"
+            min={value("eventDate") || undefined}
+            aria-invalid={Boolean(errors?.eventEndDate)}
+            defaultValue={value("eventEndDate")}
           />
         </Field>
 

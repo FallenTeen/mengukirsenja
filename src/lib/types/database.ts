@@ -28,7 +28,9 @@ type Defaulted =
   | "customer_visible"
   | "is_active"
   | "is_featured"
-  | "sort_order";
+  | "sort_order"
+  | "services_of_interest"
+  | "reference_images";
 
 /** Nullable columns may be left out of an insert; they become NULL. */
 type NullableKeys<T> = { [K in keyof T]: null extends T[K] ? K : never }[keyof T];
@@ -142,9 +144,19 @@ export type Order = Timestamps & {
   status: OrderStatus;
   event_title: string | null;
   event_date: string | null;
+  /**
+   * NULL means a one-day event, which is what every order written before the
+   * finalization migration holds. New writes always fill this in, so read it as
+   * `event_end_date ?? event_date` and never assume it is set.
+   */
+  event_end_date: string | null;
   venue_name: string | null;
   venue_address: string | null;
   customer_note: string | null;
+  /** Service names the guest asked about. Intent, not a booking. */
+  services_of_interest: string[];
+  /** `{type: "upload" | "link", value: string}[]`, validated at intake. */
+  reference_images: ReferenceImage[];
   /** Never exposed to customers. Read orders through the `customer_orders` view. */
   admin_note: string | null;
   total_estimate: number;
@@ -152,6 +164,8 @@ export type Order = Timestamps & {
   admin_confirmed_at: string | null;
   created_by_user_id: string | null;
 };
+
+export type ReferenceImage = { type: "upload" | "link"; value: string };
 
 /** Order shape that is safe to render for a customer. */
 export type CustomerOrder = Omit<Order, "admin_note">;
@@ -243,6 +257,12 @@ export type Database = {
           p_customer_note?: string | null;
           p_source?: OrderSource;
           p_catalog_item_id?: string | null;
+          /** Same day as `p_event_date` for a one-day event. */
+          p_event_end_date?: string | null;
+          /** Service slugs; the database resolves them to active service names. */
+          p_services_of_interest?: string[] | null;
+          /** `[{type, value}]`, re-validated server-side before it is stored. */
+          p_reference_images?: ReferenceImage[] | null;
         };
         Returns: string;
       };

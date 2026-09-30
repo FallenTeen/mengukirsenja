@@ -1,15 +1,15 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Info, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ReferenceImagesField } from "@/components/requests/reference-images-field";
 import { submitOrderRequest, type OrderRequestState } from "@/lib/orders/actions";
 import { minimumEventDate } from "@/lib/validations/order-request";
 import type { Service } from "@/lib/types/database";
-import { cn } from "@/lib/utils";
 
 const initialState: OrderRequestState = {};
 
@@ -21,9 +21,6 @@ function FieldError({ id, message }: { id: string; message?: string }) {
     </p>
   );
 }
-
-const selectClassName =
-  "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm";
 
 function Field({
   name,
@@ -78,7 +75,10 @@ export function OrderRequestForm({
 }) {
   const isCatalog = Boolean(catalogItemId);
   const [state, action, pending] = useActionState(submitOrderRequest, initialState);
+  const [dateMode, setDateMode] = useState<"single" | "range">("single");
+  const [startDate, setStartDate] = useState("");
   const errors = state.fieldErrors;
+  const today = minimumEventDate();
 
   return (
     <form action={action} className="grid gap-6" noValidate>
@@ -90,6 +90,7 @@ export function OrderRequestForm({
       ) : (
         <input type="hidden" name="source" value="web_custom" />
       )}
+      <input type="hidden" name="dateMode" value={dateMode} />
 
       {/* Honeypot: hidden from people, tempting to bots. */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -109,8 +110,7 @@ export function OrderRequestForm({
       ) : null}
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <Field name="name" label="Nama" required error={errors?.name}>
-          <Input
+        <Field name="name" label="Nama" required error={errors?.name}>          <Input
             id="name"
             name="name"
             autoComplete="name"
@@ -153,17 +153,70 @@ export function OrderRequestForm({
           />
         </Field>
 
-        <Field name="eventDate" label="Tanggal acara" required error={errors?.eventDate}>
+        <Field
+          name="eventDate"
+          label={dateMode === "range" ? "Tanggal mulai" : "Tanggal acara"}
+          required
+          error={errors?.eventDate}
+        >
           <Input
             id="eventDate"
             name="eventDate"
             type="date"
-            min={minimumEventDate()}
+            min={today}
             required
+            value={startDate}
+            onChange={(event) => setStartDate(event.target.value)}
             aria-invalid={Boolean(errors?.eventDate)}
             defaultValue={state.values?.eventDate}
           />
         </Field>
+
+        <fieldset className="grid gap-2">
+          <legend className="text-sm font-medium">
+            Durasi acara <span className="text-destructive" aria-hidden>*</span>
+          </legend>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="radio"
+                name="dateMode-choice"
+                checked={dateMode === "single"}
+                onChange={() => setDateMode("single")}
+                className="size-4 accent-primary"
+              />
+              <span className="text-sm">Satu hari</span>
+            </label>
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="radio"
+                name="dateMode-choice"
+                checked={dateMode === "range"}
+                onChange={() => setDateMode("range")}
+                className="size-4 accent-primary"
+              />
+              <span className="text-sm">Beberapa hari</span>
+            </label>
+          </div>
+          {dateMode === "range" ? (
+            <div className="grid gap-2 sm:max-w-64">
+              <Label htmlFor="eventEndDate">Selesai pada</Label>
+              <Input
+                id="eventEndDate"
+                name="eventEndDate"
+                type="date"
+                min={startDate || today}
+                required
+                aria-invalid={Boolean(errors?.eventEndDate)}
+              />
+              {errors?.eventEndDate ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.eventEndDate}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+        </fieldset>
 
         <Field name="venueName" label="Nama lokasi" error={errors?.venueName}>
           <Input
@@ -174,31 +227,43 @@ export function OrderRequestForm({
             defaultValue={state.values?.venueName}
           />
         </Field>
-
-        {!isCatalog ? (
-          <Field
-            name="preferredService"
-            label="Layanan yang diminati"
-            error={errors?.preferredService}
-            hint="Cukup sebagai petunjuk. Tim kami akan mengonfirmasi layanan yang tersedia."
-          >
-            <select
-              id="preferredService"
-              name="preferredService"
-              defaultValue={defaultServiceSlug ?? ""}
-              className={cn(selectClassName, "h-9")}
-              aria-invalid={Boolean(errors?.preferredService)}
-            >
-              <option value="">Belum yakin / perlu saran</option>
-              {services.map((service) => (
-                <option key={service.id} value={service.slug}>
-                  {service.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-        ) : null}
       </div>
+
+      <fieldset className="grid gap-3">
+        <legend className="text-sm font-medium">
+          Layanan yang diminati{" "}
+          <span className="text-xs font-normal text-muted-foreground">
+            (boleh pilih lebih dari satu)
+          </span>
+        </legend>
+        {errors?.services ? (
+          <p role="alert" className="text-sm text-destructive">
+            {errors.services}
+          </p>
+        ) : null}
+        <div className="grid gap-2 sm:grid-cols-2">
+          {services.map((service) => (
+            <label
+              key={service.id}
+              className="flex cursor-pointer items-start gap-2.5 rounded-lg border px-3 py-2.5 has-[:checked]:border-terracotta/60 has-[:checked]:bg-terracotta/5"
+            >
+              <input
+                type="checkbox"
+                name="services"
+                value={service.slug}
+                defaultChecked={service.slug === defaultServiceSlug}
+                className="mt-0.5 size-4 shrink-0 accent-primary"
+              />
+              <span className="grid gap-0.5">
+                <span className="text-sm font-medium">{service.name}</span>
+                {service.description ? (
+                  <span className="text-xs text-muted-foreground">{service.description}</span>
+                ) : null}
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <Field name="venueAddress" label="Alamat lokasi" error={errors?.venueAddress}>
         <Textarea
@@ -230,6 +295,8 @@ export function OrderRequestForm({
           defaultValue={state.values?.message}
         />
       </Field>
+
+      <ReferenceImagesField />
 
       {state.error ? (
         <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive">
