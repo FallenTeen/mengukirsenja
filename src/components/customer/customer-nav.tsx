@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { BrandLogo } from "@/components/site/brand-logo";
 import { FloatingWhatsApp } from "@/components/site/floating-whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -27,9 +28,9 @@ export function CustomerNav({
   return (
     <header className="border-b">
       <div className="mx-auto flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 sm:gap-5 sm:px-6">
-        <Link href="/customer" className="grid gap-1">
-          <span className="font-display text-lg leading-none">Mengukir Senja</span>
-          <span className="text-[0.65rem] uppercase tracking-[0.2em] text-terracotta">
+        <Link href="/customer" className="flex shrink-0 items-center gap-2">
+          <BrandLogo className="size-10" priority />
+          <span className="text-[0.6rem] uppercase tracking-[0.16em] text-terracotta">
             Customer Portal
           </span>
         </Link>

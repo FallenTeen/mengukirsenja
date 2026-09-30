@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AdminLoginForm } from "@/components/auth/admin-login-form";
+import { BrandLogo } from "@/components/site/brand-logo";
 import { safeNextPath } from "@/lib/auth/next-path";
 import { getProfile, getUser } from "@/lib/auth/session";
 
@@ -27,7 +28,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
   return (
     <div className="grid w-full gap-10">
       <div className="grid justify-items-center gap-3 text-center">
-        <p className="text-xs uppercase tracking-[0.35em] text-terracotta">Mengukir Senja</p>
+        <BrandLogo className="size-20" priority />
         <h1 className="font-display text-4xl md:text-5xl">Masuk admin</h1>
         <p className="max-w-md text-sm text-muted-foreground">
           Area khusus pengelola. Pelanggan tidak perlu akun untuk mengajukan pesanan, dan masuk ke

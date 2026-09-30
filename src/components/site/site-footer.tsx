@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/site/brand-logo";
 
 const services = [
   { name: "Decoration", note: "Layanan utama" },
@@ -12,8 +13,8 @@ export function SiteFooter() {
   return (
     <footer className="mt-24 border-t">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
-        <div className="grid gap-3">
-          <p className="font-display text-xl">Mengukir Senja Decoration</p>
+        <div className="grid content-start justify-items-start gap-3">
+          <BrandLogo className="size-14" />
           <p className="max-w-xs text-sm text-muted-foreground">
             Dekorasi pernikahan yang hangat, rapi, dan dikerjakan dengan perhatian pada detail.
           </p>
@@ -59,7 +60,8 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t">
-        <div className="mx-auto w-full max-w-6xl px-6 py-5 text-xs text-muted-foreground">
+        <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-6 py-5 text-xs text-muted-foreground">
+          <BrandLogo className="size-8" />
           Mengukir Senja Decoration
         </div>
       </div>

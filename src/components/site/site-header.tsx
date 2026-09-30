@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Menu } from "lucide-react";
+import { BrandLogo } from "@/components/site/brand-logo";
 
 const nav = [
   { href: "/catalog", label: "Katalog" },
@@ -25,9 +26,9 @@ export function SiteHeader() {
   return (
     <header className="border-b">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4 md:py-5">
-        <Link href="/" className="grid gap-1">
-          <span className="font-display text-2xl leading-none">Mengukir Senja</span>
-          <span className="text-[0.65rem] uppercase tracking-[0.35em] text-terracotta">
+        <Link href="/" className="flex shrink-0 items-center gap-3">
+          <BrandLogo className="size-12" priority />
+          <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
             Decoration
           </span>
         </Link>

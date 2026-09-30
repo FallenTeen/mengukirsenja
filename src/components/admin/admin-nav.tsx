@@ -12,6 +12,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { BrandLogo } from "@/components/site/brand-logo";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -30,9 +31,9 @@ export function AdminNav({ name }: { name: string | null }) {
   return (
     <aside className="flex flex-col justify-between border-b bg-card lg:min-h-dvh lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0">
       <div className="grid gap-4 p-4 lg:gap-6 lg:p-5">
-        <Link href="/admin" className="grid gap-1">
-          <span className="font-display text-xl leading-none">Mengukir Senja</span>
-          <span className="text-[0.65rem] uppercase tracking-[0.35em] text-terracotta">
+        <Link href="/admin" className="flex w-fit items-center gap-3">
+          <BrandLogo className="size-12" priority />
+          <span className="text-[0.65rem] uppercase tracking-[0.25em] text-terracotta">
             Admin
           </span>
         </Link>
