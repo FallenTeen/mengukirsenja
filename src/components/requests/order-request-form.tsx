@@ -99,7 +99,7 @@ export function OrderRequestForm({
 
       {isCatalog && catalogItemName ? (
         <div className="flex items-start gap-3 rounded-lg border bg-card px-4 py-3">
-          <Info className="mt-0.5 size-4 shrink-0 text-olive" />
+          <Info className="mt-0.5 size-4 shrink-0 text-terracotta" />
           <p className="text-sm">
             Anda mengajukan paket{" "}
             <strong className="font-medium">{catalogItemName}</strong>. Rincian layanan

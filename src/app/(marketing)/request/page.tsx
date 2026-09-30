@@ -47,7 +47,7 @@ export default async function RequestPage() {
 
           <ul className="grid gap-5">
             {notes.map((note) => (
-              <li key={note.title} className="grid gap-1 border-l-2 border-beige pl-4">
+              <li key={note.title} className="grid gap-1 border-l-2 border-cream-deep pl-4">
                 <p className="text-lg leading-snug">{note.title}</p>
                 <p className="text-sm text-muted-foreground">{note.body}</p>
               </li>

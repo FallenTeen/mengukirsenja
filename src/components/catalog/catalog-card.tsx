@@ -15,7 +15,7 @@ export function CatalogCard({ item, priority = false }: { item: CatalogEntry; pr
   return (
     <Link
       href={`/catalog/${item.slug}`}
-      className="group grid gap-4 rounded-xl border bg-card p-3 transition-all hover:border-olive/60 hover:shadow-sm"
+      className="group grid gap-4 rounded-xl border bg-card p-3 transition-all hover:border-terracotta/60 hover:shadow-sm"
     >
       <div className="relative aspect-4/5 overflow-hidden rounded-lg">
         <CoverImage
@@ -33,7 +33,7 @@ export function CatalogCard({ item, priority = false }: { item: CatalogEntry; pr
       </div>
 
       <div className="grid gap-2 px-1 pb-2">
-        <p className="text-[0.65rem] uppercase tracking-[0.3em] text-olive">
+        <p className="text-[0.65rem] uppercase tracking-[0.3em] text-terracotta">
           {item.service_name}
           {item.partner_name ? ` · ${item.partner_name}` : ""}
         </p>
@@ -42,7 +42,7 @@ export function CatalogCard({ item, priority = false }: { item: CatalogEntry; pr
           {item.description ?? "Rincian paket akan diuraikan bersama Anda."}
         </p>
         <p className="mt-1 text-sm font-medium text-foreground">{priceText(item)}</p>
-        <span className="mt-2 inline-flex items-center gap-1.5 text-sm text-olive">
+        <span className="mt-2 inline-flex items-center gap-1.5 text-sm text-terracotta">
           Lihat detail
           <ArrowRight
             data-icon="inline-end"

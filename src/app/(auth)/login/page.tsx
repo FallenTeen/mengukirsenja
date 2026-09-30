@@ -20,7 +20,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
   return (
     <div className="grid w-full gap-10">
       <div className="grid justify-items-center gap-3 text-center">
-        <p className="text-xs uppercase tracking-[0.35em] text-olive">Mengukir Senja</p>
+        <p className="text-xs uppercase tracking-[0.35em] text-terracotta">Mengukir Senja</p>
         <h1 className="font-display text-4xl md:text-5xl">Masuk</h1>
         <p className="max-w-md text-sm text-muted-foreground">
           Pesanan tetap bisa dibuat tanpa akun. Akun hanya diperlukan untuk membuka detail

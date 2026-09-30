@@ -12,7 +12,7 @@ export default function CustomerOverviewPage() {
         description="Di sini Anda akan melihat acara terdekat, status pesanan, layanan yang dipilih, dan estimasi total."
       />
       <PhaseNotice>
-        Data pesanan asli akan tampil di sini pada <strong>Fase 3</strong>. Akun Anda sudah
+        Data pesanan asli akan tampil di sini pada <strong>Fase 5</strong>. Akun Anda sudah
         terhubung, tetapi belum ada pesanan yang dibuat melalui website ini.
       </PhaseNotice>
     </div>

@@ -1,17 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { sendMagicLink } from "@/lib/auth/magic-link";
 import { safeNextPath } from "@/lib/auth/next-path";
 import { createClient } from "@/lib/supabase/server";
 import { adminLoginSchema, magicLinkSchema } from "@/lib/validations/auth";
 
 export type AuthActionState = { error?: string; message?: string };
-
-async function siteOrigin(): Promise<string> {
-  const origin = (await headers()).get("origin");
-  return process.env.NEXT_PUBLIC_SITE_URL || origin || "http://localhost:3000";
-}
 
 export async function requestMagicLink(
   _prev: AuthActionState,
@@ -22,17 +17,11 @@ export async function requestMagicLink(
     return { error: parsed.error.issues[0]?.message ?? "Email tidak valid." };
   }
 
-  const supabase = await createClient();
-  const next = safeNextPath(formData.get("next"), "/customer");
-  const { error } = await supabase.auth.signInWithOtp({
-    email: parsed.data.email,
-    options: {
-      shouldCreateUser: true,
-      emailRedirectTo: `${await siteOrigin()}/auth/callback?next=${encodeURIComponent(next)}`,
-    },
-  });
-
-  if (error) return { error: error.message };
+  const { error } = await sendMagicLink(
+    parsed.data.email,
+    safeNextPath(formData.get("next"), "/customer"),
+  );
+  if (error) return { error };
 
   return {
     message: `Tautan masuk telah dikirim ke ${parsed.data.email}. Periksa juga folder spam.`,

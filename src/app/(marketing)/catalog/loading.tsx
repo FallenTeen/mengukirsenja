@@ -8,8 +8,8 @@ export default function CatalogLoading() {
       <span className="sr-only">Memuat katalog…</span>
 
       <div className="grid gap-4 border-b pb-10">
-        <div className="h-3 w-24 animate-pulse rounded bg-beige" />
-        <div className="h-10 w-3/4 animate-pulse rounded bg-beige" />
+        <div className="h-3 w-24 animate-pulse rounded bg-cream-deep" />
+        <div className="h-10 w-3/4 animate-pulse rounded bg-cream-deep" />
         <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
       </div>
 
@@ -24,7 +24,7 @@ export default function CatalogLoading() {
           <div key={index} className="grid gap-4 rounded-xl border p-3">
             <div className="aspect-4/5 animate-pulse rounded-lg bg-muted" />
             <div className="h-3 w-20 animate-pulse rounded bg-muted" />
-            <div className="h-6 w-3/4 animate-pulse rounded bg-beige" />
+            <div className="h-6 w-3/4 animate-pulse rounded bg-cream-deep" />
           </div>
         ))}
       </div>

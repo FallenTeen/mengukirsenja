@@ -25,7 +25,7 @@ export function CoverImage({
         aria-hidden
         data-slot="cover-placeholder"
         className={cn(
-          "bg-[linear-gradient(140deg,var(--beige)_0%,var(--ivory)_45%,var(--olive)_160%)]",
+          "bg-[linear-gradient(140deg,var(--cream-deep)_0%,var(--cream)_45%,var(--terracotta)_160%)]",
           className,
         )}
       />

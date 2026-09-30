@@ -1,6 +1,6 @@
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-xs uppercase tracking-[0.35em] text-olive">{children}</p>
+    <p className="text-xs uppercase tracking-[0.35em] text-terracotta">{children}</p>
   );
 }
 

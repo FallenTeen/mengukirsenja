@@ -62,7 +62,7 @@ export function LoginForms({
               Kirim Tautan Masuk
             </Button>
             {magicLink.message ? (
-              <p role="status" className="text-sm text-olive">
+              <p role="status" className="text-sm text-terracotta">
                 {magicLink.message}
               </p>
             ) : null}

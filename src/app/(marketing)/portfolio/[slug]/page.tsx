@@ -92,12 +92,12 @@ export default async function PortfolioDetailPage({ params }: PageProps<"/portfo
 
             <div className="grid content-start gap-4 rounded-xl border bg-card/60 p-6">
               <div className="grid gap-1">
-                <p className="text-xs uppercase tracking-[0.3em] text-olive">Layanan</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-terracotta">Layanan</p>
                 <p className="text-lg">{item.service_name}</p>
               </div>
               {eventDate ? (
                 <div className="grid gap-1">
-                  <p className="text-xs uppercase tracking-[0.3em] text-olive">Tanggal acara</p>
+                  <p className="text-xs uppercase tracking-[0.3em] text-terracotta">Tanggal acara</p>
                   <p className="text-lg">{eventDate}</p>
                 </div>
               ) : null}

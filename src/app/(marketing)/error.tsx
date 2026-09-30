@@ -19,7 +19,7 @@ export default function MarketingError({
   return (
     <div className="mx-auto grid w-full max-w-2xl gap-6 px-6 py-24 text-center">
       <div className="grid gap-3">
-        <p className="text-xs uppercase tracking-[0.35em] text-olive">Terjadi kendala</p>
+        <p className="text-xs uppercase tracking-[0.35em] text-terracotta">Terjadi kendala</p>
         <h1 className="text-4xl leading-tight">Halaman ini belum bisa dimuat</h1>
         <p className="text-muted-foreground">
           Kami gagal mengambil data terbaru dari server. Silakan coba lagi, atau hubungi kami

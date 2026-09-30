@@ -64,7 +64,7 @@ export default async function CatalogPage({ searchParams }: PageProps<"/catalog"
             tamu, dan lokasi acara Anda. Anda tidak perlu membuat akun.
           </p>
           {activeService && !isCustomView ? (
-            <p className="text-xs text-olive">
+            <p className="text-xs text-terracotta">
               Layanan saat ini: {activeServiceName}. Untuk permintaan yang murni dekorasi, gunakan
               filter Decoration.
             </p>

@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <div className="mx-auto grid w-full max-w-2xl gap-6 px-6 py-24 text-center">
       <div className="grid gap-3">
-        <p className="text-xs uppercase tracking-[0.35em] text-olive">404</p>
+        <p className="text-xs uppercase tracking-[0.35em] text-terracotta">404</p>
         <h1 className="text-4xl leading-tight">Halaman tidak ditemukan</h1>
         <p className="text-muted-foreground">
           Tautan yang Anda buka mungkin sudah berubah atau paketnya sudah tidak tersedia.

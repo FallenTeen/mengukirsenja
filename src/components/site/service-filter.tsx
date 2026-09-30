@@ -28,7 +28,7 @@ export function ServiceFilter({
         className={cn(
           "rounded-full border px-4 py-1.5 text-sm transition-colors",
           isAll
-            ? "border-olive bg-olive text-ivory"
+            ? "border-terracotta bg-terracotta text-cream"
             : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
         )}
       >
@@ -47,7 +47,7 @@ export function ServiceFilter({
               "rounded-full border px-4 py-1.5 transition-colors",
               isCore ? "text-sm font-medium" : "text-sm",
               active
-                ? "border-olive bg-olive text-ivory"
+                ? "border-terracotta bg-terracotta text-cream"
                 : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >

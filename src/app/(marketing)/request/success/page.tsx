@@ -16,7 +16,7 @@ export default async function RequestSuccessPage({ searchParams }: PageProps<"/r
   return (
     <Section className="py-20">
       <div className="mx-auto grid w-full max-w-2xl gap-8 text-center">
-        <CheckCircle2 className="mx-auto size-12 text-olive" aria-hidden />
+        <CheckCircle2 className="mx-auto size-12 text-terracotta" aria-hidden />
         <div className="grid gap-3">
           <h1 className="text-4xl leading-tight">Pengajuan Anda sudah kami terima</h1>
           <p className="text-muted-foreground">
@@ -27,7 +27,7 @@ export default async function RequestSuccessPage({ searchParams }: PageProps<"/r
 
         {code ? (
           <div className="rounded-xl border bg-card/60 px-6 py-5">
-            <p className="text-xs uppercase tracking-[0.3em] text-olive">Kode pesanan Anda</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-terracotta">Kode pesanan Anda</p>
             <p className="mt-2 font-display text-4xl tracking-wide">{code}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               Simpan kode ini. Gunakan saat menghubungi kami agar mudah kami temukan.

@@ -81,7 +81,7 @@ export default async function CatalogDetailPage({ params }: PageProps<"/catalog/
                 {item.is_featured ? <Badge variant="secondary">Unggulan</Badge> : null}
               </div>
               <h1 className="text-4xl leading-tight md:text-5xl">{item.name}</h1>
-              <p className="font-display text-2xl text-olive">{priceLine(item)}</p>
+              <p className="font-display text-2xl text-terracotta">{priceLine(item)}</p>
             </div>
 
             <div className="grid gap-3 border-y py-6">

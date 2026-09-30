@@ -41,7 +41,7 @@ export default async function AboutPage() {
     <>
       <Section className="py-14">
         <div className="grid gap-6">
-          <p className="text-xs uppercase tracking-[0.35em] text-olive">Tentang</p>
+          <p className="text-xs uppercase tracking-[0.35em] text-terracotta">Tentang</p>
           <h1 className="max-w-3xl text-4xl leading-tight md:text-5xl">
             Mengukir Senja Decoration
           </h1>

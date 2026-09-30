@@ -55,7 +55,7 @@ export default async function HomePage() {
       <Section className="py-16 md:py-24">
         <div className="grid items-center gap-12 md:grid-cols-[1.05fr_0.95fr]">
           <div className="grid gap-7">
-            <p className="text-xs uppercase tracking-[0.35em] text-olive">
+            <p className="text-xs uppercase tracking-[0.35em] text-terracotta">
               Mengukir Senja Decoration
             </p>
             <h1 className="text-5xl leading-[1.05] md:text-6xl">
@@ -96,9 +96,9 @@ export default async function HomePage() {
                   className="transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
               </div>
-              <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-charcoal/80 to-transparent p-6">
-                <p className="text-xs uppercase tracking-[0.3em] text-ivory/80">Karya terbaru</p>
-                <p className="mt-1 text-xl text-ivory">{heroImage.title}</p>
+              <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-brown/80 to-transparent p-6">
+                <p className="text-xs uppercase tracking-[0.3em] text-cream/80">Karya terbaru</p>
+                <p className="mt-1 text-xl text-cream">{heroImage.title}</p>
               </div>
             </Link>
           ) : null}
@@ -185,7 +185,7 @@ export default async function HomePage() {
                 <li key={service.id}>
                   <Link
                     href={`/catalog?service=${service.slug}`}
-                    className="group flex items-start justify-between gap-4 rounded-xl border bg-background p-5 transition-all hover:border-olive/60 hover:shadow-sm"
+                    className="group flex items-start justify-between gap-4 rounded-xl border bg-background p-5 transition-all hover:border-terracotta/60 hover:shadow-sm"
                   >
                     <span className="grid gap-1">
                       <span className="text-xl">{service.name}</span>
@@ -193,7 +193,7 @@ export default async function HomePage() {
                         {service.description ?? "Hubungi kami untuk rincian layanan."}
                       </span>
                     </span>
-                    <span className="shrink-0 text-xs text-olive">
+                    <span className="shrink-0 text-xs text-terracotta">
                       {count > 0 ? `${count} paket` : "Segera"}
                     </span>
                   </Link>
@@ -213,7 +213,7 @@ export default async function HomePage() {
         <ol className="mt-10 grid gap-6 md:grid-cols-4">
           {steps.map((step, index) => (
             <li key={step.title} className="grid gap-2 border-t pt-4">
-              <span className="font-display text-3xl text-olive">
+              <span className="font-display text-3xl text-terracotta">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <h3 className="text-lg leading-snug">{step.title}</h3>
@@ -223,14 +223,14 @@ export default async function HomePage() {
         </ol>
       </Section>
 
-      <div className="border-t bg-charcoal text-ivory">
+      <div className="border-t bg-brown text-cream">
         <Section className="py-16">
           <div className="grid gap-6 md:grid-cols-[1.2fr_auto] md:items-center">
             <div className="grid gap-3">
-              <h2 className="max-w-2xl text-3xl text-ivory md:text-4xl">
+              <h2 className="max-w-2xl text-3xl text-cream md:text-4xl">
                 Sudah punya gambaran untuk acara Anda?
               </h2>
-              <p className="max-w-xl text-ivory/75">
+              <p className="max-w-xl text-cream/75">
                 Kirim detailnya hari ini. Kami akan menghubungi Anda melalui WhatsApp untuk
                 menentukan layanan yang paling pas.
               </p>
@@ -248,7 +248,7 @@ export default async function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-ivory/30 bg-transparent text-ivory hover:bg-ivory/10 hover:text-ivory"
+                className="border-cream/30 bg-transparent text-cream hover:bg-cream/10 hover:text-cream"
                 render={<Link href="/contact" />}
               >
                 Hubungi Kami

@@ -20,7 +20,7 @@ export function SiteFooter() {
         </div>
 
         <div className="grid gap-3">
-          <p className="text-xs uppercase tracking-[0.3em] text-olive">Halaman</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-terracotta">Halaman</p>
           <ul className="grid gap-2 text-sm text-muted-foreground">
             <li>
               <Link href="/catalog" className="hover:text-foreground">
@@ -46,12 +46,12 @@ export function SiteFooter() {
         </div>
 
         <div className="grid gap-3">
-          <p className="text-xs uppercase tracking-[0.3em] text-olive">Layanan</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-terracotta">Layanan</p>
           <ul className="grid gap-2 text-sm text-muted-foreground">
             {services.map((service) => (
               <li key={service.name} className="flex items-baseline gap-2">
                 <span>{service.name}</span>
-                <span className="text-xs text-olive">{service.note}</span>
+                <span className="text-xs text-terracotta">{service.note}</span>
               </li>
             ))}
           </ul>

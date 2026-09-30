@@ -12,7 +12,7 @@ export default function CustomerOrdersPage() {
         description="Daftar pesanan beserta tanggal acara, lokasi, dan statusnya."
       />
       <PhaseNotice>
-        Daftar pesanan akan tampil di sini pada <strong>Fase 3</strong>.
+        Daftar pesanan akan tampil di sini pada <strong>Fase 5</strong>.
       </PhaseNotice>
     </div>
   );

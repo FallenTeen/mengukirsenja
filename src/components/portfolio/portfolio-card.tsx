@@ -26,12 +26,12 @@ export function PortfolioCard({
           className="transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-charcoal/80 via-charcoal/30 to-transparent p-5">
-        <p className="text-[0.65rem] uppercase tracking-[0.3em] text-ivory/80">
+      <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-brown/80 via-brown/30 to-transparent p-5">
+        <p className="text-[0.65rem] uppercase tracking-[0.3em] text-cream/80">
           {item.service_name}
           {month ? ` · ${month}` : ""}
         </p>
-        <h3 className="mt-1 text-xl leading-tight text-ivory">{item.title}</h3>
+        <h3 className="mt-1 text-xl leading-tight text-cream">{item.title}</h3>
       </div>
     </Link>
   );

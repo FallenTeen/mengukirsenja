@@ -12,7 +12,7 @@ export default function CustomerProfilePage() {
         description="Nama, email, WhatsApp, dan alamat yang tercatat pada pesanan Anda."
       />
       <PhaseNotice>
-        Pengaturan profil akan tampil di sini pada <strong>Fase 3</strong>.
+        Pengaturan profil akan tampil di sini pada <strong>Fase 5</strong>.
       </PhaseNotice>
     </div>
   );

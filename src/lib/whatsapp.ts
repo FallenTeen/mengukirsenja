@@ -1,0 +1,46 @@
+/**
+ * WhatsApp deep links. No WhatsApp Business API: the browser hands the message
+ * to the WhatsApp app through wa.me.
+ */
+
+/**
+ * Normalizes an Indonesian phone number to the bare international digits
+ * wa.me expects. Local `08` becomes `628`, `+62` and `62` are kept as they are.
+ */
+export function normalizePhone(phone: string | null | undefined): string | null {
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, "");
+  if (!digits) return null;
+  if (digits.startsWith("62")) return digits;
+  if (digits.startsWith("0")) return `62${digits.slice(1)}`;
+  return digits;
+}
+
+/** Null when the number is missing or unusable, so callers can hide the action. */
+export function buildWhatsAppLink(
+  phone: string | null | undefined,
+  message: string,
+): string | null {
+  const number = normalizePhone(phone);
+  return number ? `https://wa.me/${number}?text=${encodeURIComponent(message)}` : null;
+}
+
+/** Opening line the admin sends to a customer, contextual to their order. */
+export function adminToCustomerMessage({
+  customerName,
+  orderCode,
+  eventDate,
+}: {
+  customerName: string;
+  orderCode?: string | null;
+  eventDate?: string | null;
+}): string {
+  const subject = [
+    orderCode ? `pesanan ${orderCode}` : null,
+    eventDate ? `untuk acara pada ${eventDate}` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return `Halo ${customerName}, terkait ${subject || "acara Anda"}, saya ingin mendiskusikan detail pesanannya.`;
+}

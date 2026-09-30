@@ -8,8 +8,8 @@ export default function PortfolioLoading() {
       <span className="sr-only">Memuat portfolio…</span>
 
       <div className="grid gap-4 border-b pb-10">
-        <div className="h-3 w-24 animate-pulse rounded bg-beige" />
-        <div className="h-10 w-3/4 animate-pulse rounded bg-beige" />
+        <div className="h-3 w-24 animate-pulse rounded bg-cream-deep" />
+        <div className="h-10 w-3/4 animate-pulse rounded bg-cream-deep" />
         <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
       </div>
 

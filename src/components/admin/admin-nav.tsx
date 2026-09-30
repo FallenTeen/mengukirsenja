@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   CalendarDays,
   ClipboardList,
@@ -9,6 +12,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { cn } from "@/lib/utils";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -21,12 +25,14 @@ const nav = [
 ];
 
 export function AdminNav({ name }: { name: string | null }) {
+  const pathname = usePathname();
+
   return (
     <aside className="flex flex-col justify-between border-b bg-card lg:min-h-dvh lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0">
       <div className="grid gap-6 p-5">
         <Link href="/admin" className="grid gap-1">
           <span className="font-display text-xl leading-none">Mengukir Senja</span>
-          <span className="text-[0.65rem] uppercase tracking-[0.35em] text-olive">
+          <span className="text-[0.65rem] uppercase tracking-[0.35em] text-terracotta">
             Admin
           </span>
         </Link>
@@ -36,7 +42,11 @@ export function AdminNav({ name }: { name: string | null }) {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              aria-current={pathname === href ? "page" : undefined}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                pathname === href && "bg-muted font-medium text-foreground",
+              )}
             >
               <Icon className="size-4" aria-hidden />
               {label}
