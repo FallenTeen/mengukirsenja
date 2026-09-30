@@ -62,9 +62,21 @@ export async function getAdminOrders(filters: OrderFilters = {}): Promise<OrderL
 
   const term = (filters.search ?? "").trim().replace(/[,()%*\\]/g, " ").slice(0, 80);
   if (term) {
-    query = query.or(
-      `order_code.ilike.%${term}%,event_title.ilike.%${term}%,venue_name.ilike.%${term}%,customers.name.ilike.%${term}%`,
-    );
+    const { data: customers, error: customerError } = await supabase
+      .from("customers")
+      .select("id")
+      .ilike("name", `%${term}%`)
+      .limit(200);
+    if (customerError) throw new Error(`Gagal mencari customer: ${customerError.message}`);
+
+    const searchFilters = [
+      `order_code.ilike.%${term}%`,
+      `event_title.ilike.%${term}%`,
+      `venue_name.ilike.%${term}%`,
+    ];
+    const customerIds = (customers ?? []).map(({ id }) => id);
+    if (customerIds.length > 0) searchFilters.push(`customer_id.in.(${customerIds.join(",")})`);
+    query = query.or(searchFilters.join(","));
   }
 
   const { data, error } = await query;
