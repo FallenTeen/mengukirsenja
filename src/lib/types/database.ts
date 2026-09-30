@@ -11,9 +11,34 @@ export type OrderStatus =
 
 /** Columns filled in by a database default rather than the caller. */
 type Generated = "id" | "created_at" | "updated_at";
-type GeneratedKeys<T> = Extract<Generated, keyof T>;
+
+/**
+ * Non-generated columns the database still fills in from a `default` clause.
+ * Without this an insert would have to restate values Postgres already knows,
+ * e.g. the generated `order_code`.
+ */
+type Defaulted =
+  | "order_code"
+  | "total_estimate"
+  | "status"
+  | "quantity"
+  | "unit_price"
+  | "subtotal"
+  | "is_custom"
+  | "customer_visible"
+  | "is_active"
+  | "is_featured"
+  | "sort_order";
+
+/** Nullable columns may be left out of an insert; they become NULL. */
+type NullableKeys<T> = { [K in keyof T]: null extends T[K] ? K : never }[keyof T];
+
+type Omitted<T> = Extract<Generated | Defaulted | NullableKeys<T>, keyof T>;
+type GeneratedKeys<T> = Omitted<T>;
 type Insertable<T> = Omit<T, GeneratedKeys<T>> & Partial<Pick<T, GeneratedKeys<T>>>;
 type Updatable<T> = Partial<Omit<T, "id" | "created_at">>;
+
+export type { Insertable, Updatable };
 
 /**
  * A many-to-one foreign key. Required so supabase-js can type embedded

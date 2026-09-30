@@ -4,15 +4,11 @@ import { ArrowRight, Package, Sparkles, TriangleAlert, Users } from "lucide-reac
 import { PageIntro } from "@/components/site/page-intro";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/format";
+import { ORDER_STATUS_LABEL } from "@/lib/order-status";
 import { getDashboardCounts } from "@/lib/queries/admin-content";
+import type { OrderStatus } from "@/lib/types/database";
 
 export const metadata: Metadata = { title: "Dashboard" };
-
-const STATUS_LABEL: Record<string, string> = {
-  pending_admin_review: "Menunggu ditinjau",
-  awaiting_customer_confirmation: "Menunggu konfirmasi",
-  confirmed: "Terkonfirmasi",
-};
 
 export default async function AdminDashboardPage() {
   const stats = await getDashboardCounts();
@@ -74,7 +70,9 @@ export default async function AdminDashboardPage() {
             {stats.upcomingOrders.map((order) => (
               <li key={order.order_code} className="flex flex-wrap items-center gap-3 px-4 py-3">
                 <span className="font-mono text-sm">{order.order_code}</span>
-                <Badge variant="outline">{STATUS_LABEL[order.status] ?? order.status}</Badge>
+                <Badge variant="outline">
+                  {ORDER_STATUS_LABEL[order.status as OrderStatus] ?? order.status}
+                </Badge>
                 <span className="ml-auto text-sm text-muted-foreground">
                   {formatDate(order.event_date) ?? "Tanggal belum ditentukan"}
                 </span>

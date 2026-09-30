@@ -72,3 +72,29 @@ export function FilterSelect({
     </div>
   );
 }
+
+/** Same shell as `FilterSelect`, for the date-range filters on the order list. */
+export function FilterDate({
+  name,
+  label,
+  defaultValue,
+}: {
+  name: string;
+  label: string;
+  defaultValue?: string;
+}) {
+  return (
+    <div className="grid gap-1.5 sm:min-w-40">
+      <label htmlFor={name} className="text-xs font-medium text-muted-foreground">
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type="date"
+        defaultValue={defaultValue}
+        className={selectClassName}
+      />
+    </div>
+  );
+}

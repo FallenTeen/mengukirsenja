@@ -34,7 +34,7 @@ export function adminToCustomerMessage({
   customerName: string;
   orderCode?: string | null;
   eventDate?: string | null;
-}): string {
+}) {
   const subject = [
     orderCode ? `pesanan ${orderCode}` : null,
     eventDate ? `untuk acara pada ${eventDate}` : null,
@@ -44,3 +44,36 @@ export function adminToCustomerMessage({
 
   return `Halo ${customerName}, terkait ${subject || "acara Anda"}, saya ingin mendiskusikan detail pesanannya.`;
 }
+
+/** Plain greeting, for the "Open WhatsApp" button that carries no context yet. */
+export function adminGreeting(customerName: string): string {
+  return `Halo ${customerName}, saya admin dari Mengukir Senja Decoration.`;
+}
+
+/** Sent when the studio is ready for the customer to approve the breakdown. */
+export function requestOrderConfirmationMessage({
+  customerName,
+  orderCode,
+  totalEstimate,
+  portalUrl,
+}: {
+  customerName: string;
+  orderCode: string;
+  totalEstimate: number;
+  /** Absolute portal URL, so the message is usable outside this app. */
+  portalUrl: string;
+}) {
+  const rupiah = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(totalEstimate);
+
+  return [
+    `Halo ${customerName}, pesanan ${orderCode} sudah kami siapkan.`,
+    `Estimasi total ${rupiah}.`,
+    `Rinciannya bisa Anda lihat di ${portalUrl}.`,
+    "Beri tahu kami lewat WhatsApp ini bila ada yang ingin ditanyakan.",
+  ].join(" ");
+}
+
