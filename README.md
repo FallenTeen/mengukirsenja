@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Mengukir Senja
 
-## Getting Started
+Website dan sistem pengelolaan pesanan untuk Mengukir Senja Decoration.
 
-First, run the development server:
+Fungsi Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Public Website
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Profil Mengukir Senja Decoration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Katalog paket Decoration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Katalog Partner Services
 
-## Learn More
+Portfolio pekerjaan
 
-To learn more about Next.js, take a look at the following resources:
+Detail paket dan portfolio
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Pengajuan pesanan dari katalog
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Pengajuan custom order
 
-## Deploy on Vercel
+Admin Panel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Dashboard operasional
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Kalender pesanan
+
+Membuat pesanan secara manual
+
+Mengelola customer
+
+Mengelola katalog
+
+Mengelola portfolio
+
+Mengelola partner services
+
+Mengubah dan menyesuaikan isi pesanan
+
+Mengirim akses customer melalui Magic Link
+
+Membuka percakapan WhatsApp dari order
+
+Customer Portal
+
+Login menggunakan Magic Link
+
+Melihat pesanan
+
+Melihat detail acara
+
+Melihat layanan dan item pesanan
+
+Melihat estimasi total
+
+Melihat catatan yang dibagikan admin
+
+Mengonfirmasi pesanan
+
+Menghubungi admin melalui WhatsApp
+
+Model Layanan
+
+Core
+
+Decoration — Mengukir Senja Decoration
+
+Partner Services
+
+Soundsystem — Basssound
+
+Tenda
+
+Fotografer
+
+Layur
+
+Customer dapat memiliki pesanan tanpa akun. Akun portal hanya diperlukan ketika customer membutuhkan akses ke detail pesanannya melalui Magic Link.
+
+Alur Pesanan
+
+Catalog Request
+        │
+Custom Request
+        │
+Admin Manual Order
+        ▼
+      Order
+        ▼
+Admin Review & Customization
+        ▼
+Customer Confirmation
+        ▼
+     Confirmed
+
+Pesanan yang berasal dari luar website tetap dapat dicatat melalui kalender dan panel admin.
