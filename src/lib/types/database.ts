@@ -15,11 +15,30 @@ type GeneratedKeys<T> = Extract<Generated, keyof T>;
 type Insertable<T> = Omit<T, GeneratedKeys<T>> & Partial<Pick<T, GeneratedKeys<T>>>;
 type Updatable<T> = Partial<Omit<T, "id" | "created_at">>;
 
-type Table<Row, Insert = Insertable<Row>, Update = Updatable<Row>> = {
+/**
+ * A many-to-one foreign key. Required so supabase-js can type embedded
+ * selects such as `select("..., services ( name, slug )")` and filters such as
+ * `eq("services.slug", value)`. Names must match the constraints in the
+ * database.
+ */
+type Fk<Column extends string, Ref extends string> = {
+  foreignKeyName: string;
+  columns: Column[];
+  isOneToOne: false;
+  referencedRelation: Ref;
+  referencedColumns: ["id"];
+};
+
+type Table<
+  Row,
+  Insert = Insertable<Row>,
+  Update = Updatable<Row>,
+  Relationships extends Fk<string, string>[] = [],
+> = {
   Row: Row;
   Insert: Insert;
   Update: Update;
-  Relationships: [];
+  Relationships: Relationships;
 };
 
 type View<Row> = { Row: Row; Relationships: [] };
@@ -135,13 +154,43 @@ export type Database = {
   public: {
     Tables: {
       profiles: Table<Profile, ProfileInsert>;
-      customers: Table<Customer>;
+      customers: Table<
+        Customer,
+        Insertable<Customer>,
+        Updatable<Customer>,
+        [Fk<"auth_user_id", "profiles">]
+      >;
       services: Table<Service>;
-      partners: Table<Partner>;
-      catalog_items: Table<CatalogItem>;
-      portfolio_items: Table<PortfolioItem>;
-      orders: Table<Order>;
-      order_items: Table<OrderItem>;
+      partners: Table<Partner, Insertable<Partner>, Updatable<Partner>, [Fk<"service_id", "services">]>;
+      catalog_items: Table<
+        CatalogItem,
+        Insertable<CatalogItem>,
+        Updatable<CatalogItem>,
+        [Fk<"service_id", "services">, Fk<"partner_id", "partners">]
+      >;
+      portfolio_items: Table<
+        PortfolioItem,
+        Insertable<PortfolioItem>,
+        Updatable<PortfolioItem>,
+        [Fk<"service_id", "services">]
+      >;
+      orders: Table<
+        Order,
+        Insertable<Order>,
+        Updatable<Order>,
+        [Fk<"customer_id", "customers">, Fk<"created_by_user_id", "profiles">]
+      >;
+      order_items: Table<
+        OrderItem,
+        Insertable<OrderItem>,
+        Updatable<OrderItem>,
+        [
+          Fk<"order_id", "orders">,
+          Fk<"catalog_item_id", "catalog_items">,
+          Fk<"service_id", "services">,
+          Fk<"partner_id", "partners">,
+        ]
+      >;
     };
     Views: {
       customer_orders: View<CustomerOrder>;
@@ -152,6 +201,25 @@ export type Database = {
       link_customer_to_auth_user: {
         Args: Record<PropertyKey, never>;
         Returns: string | null;
+      };
+      /**
+       * Public intake for the booking and custom request forms. Reuses the
+       * customer matched on email, then creates an order awaiting admin review.
+       * Returns the generated order code, e.g. `MS-2026-0001`.
+       */
+      submit_order_request: {
+        Args: {
+          p_name: string;
+          p_email: string;
+          p_phone: string;
+          p_event_date: string;
+          p_venue_name?: string | null;
+          p_venue_address?: string | null;
+          p_customer_note?: string | null;
+          p_source?: OrderSource;
+          p_catalog_item_id?: string | null;
+        };
+        Returns: string;
       };
     };
     Enums: {

@@ -1,28 +1,72 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageIntro, PhaseNotice } from "@/components/site/page-intro";
+import { OrderRequestForm } from "@/components/requests/order-request-form";
+import { PageIntro } from "@/components/site/page-intro";
+import { Section } from "@/components/site/section";
+import { getActiveServices } from "@/lib/queries/public-content";
 
-export const metadata: Metadata = { title: "Ajukan Pesanan" };
+export const revalidate = 3600;
 
-export default function RequestPage() {
+export const metadata: Metadata = {
+  title: "Ajukan Pesanan",
+  description:
+    "Ajukan custom request dekorasi atau layanan acara tanpa perlu membuat akun.",
+};
+
+const notes = [
+  {
+    title: "Tidak perlu akun",
+    body: "Cukup isi data di samping. Tidak ada password yang perlu diingat.",
+  },
+  {
+    title: "Balas lewat WhatsApp",
+    body: "Admin akan menghubungi nomor yang Anda cantumkan untuk membahas detail acara.",
+  },
+  {
+    title: "Harga belum final",
+    body: "Kami menyusun estimasi lebih dulu, lalu menyepakatkannya bersama Anda sebelum ada biaya apa pun.",
+  },
+  {
+    title: "Pantau pesanan Anda",
+    body: "Jika Anda perlu melihat pemutakhiran pesanan, masuk dengan email yang sama untuk membuka portal pelanggan.",
+  },
+];
+
+export default async function RequestPage() {
+  const services = await getActiveServices();
+
   return (
-    <div className="mx-auto grid w-full max-w-3xl gap-10 px-6 py-20">
-      <PageIntro
-        label="Custom Request"
-        title="Ajukan pesanan tanpa akun"
-        description="Isi data acara Anda. Admin kami akan menyusun rincian layanan, lalu mengirim tautan untuk Anda tinjau dan konfirmasi."
-      />
-      <PhaseNotice>
-        Formulir pengajuan akan tampil di sini pada <strong>Fase 2</strong>. Anda tidak perlu
-        membuat akun untuk mengajukan pesanan.
-      </PhaseNotice>
-      <p className="text-sm text-muted-foreground">
-        Butuh melihat pesanan yang sudah diajukan?{" "}
-        <Link href="/login" className="underline underline-offset-4">
-          Masuk dengan email
-        </Link>
-        .
-      </p>
-    </div>
+    <Section className="py-14">
+      <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="grid content-start gap-8">
+          <PageIntro
+            label="Custom Request"
+            title="Ajukan pesanan tanpa akun"
+            description="Halaman ini untuk Anda yang membutuhkan layanan dekorasi atau layanan acara yang belum tercantum di katalog."
+          />
+
+          <ul className="grid gap-5">
+            {notes.map((note) => (
+              <li key={note.title} className="grid gap-1 border-l-2 border-beige pl-4">
+                <p className="text-lg leading-snug">{note.title}</p>
+                <p className="text-sm text-muted-foreground">{note.body}</p>
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-sm text-muted-foreground">
+            Sudah menemukan paket yang cocok?{" "}
+            <Link href="/catalog" className="underline underline-offset-4">
+              Lihat katalog
+            </Link>{" "}
+            untuk memesan paket tertentu.
+          </p>
+        </div>
+
+        <div className="rounded-xl border bg-card/40 p-6 md:p-8">
+          <OrderRequestForm services={services} />
+        </div>
+      </div>
+    </Section>
   );
 }
