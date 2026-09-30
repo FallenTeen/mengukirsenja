@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Field, FormMessages } from "@/components/admin/field";
+import { Panel, PanelBody, PanelHeader } from "@/components/dashboard/panel";
 import {
   saveCustomer,
   sendCustomerMagicLink,
@@ -17,7 +18,7 @@ const initialState: AdminFormState = {};
 
 export function CustomerForm({ customer }: { customer: Customer }) {
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_20rem] lg:items-start">
+    <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
       <ContactForm customer={customer} />
       <MagicLinkPanel customer={customer} />
     </div>
@@ -30,10 +31,13 @@ function ContactForm({ customer }: { customer: Customer }) {
   const values = state.values;
 
   return (
-    <form action={formAction} className="grid gap-6" noValidate>
+    <Panel>
+      <PanelHeader title="Data kontak" />
+      <PanelBody>
+    <form action={formAction} className="grid gap-4" noValidate>
       <input type="hidden" name="id" value={customer.id} />
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field name="name" label="Nama" required error={errors?.name}>
           <Input
             id="name"
@@ -88,6 +92,8 @@ function ContactForm({ customer }: { customer: Customer }) {
         </Button>
       </div>
     </form>
+      </PanelBody>
+    </Panel>
   );
 }
 
@@ -95,8 +101,9 @@ function MagicLinkPanel({ customer }: { customer: Customer }) {
   const [state, formAction, pending] = useActionState(sendCustomerMagicLink, initialState);
 
   return (
-    <div className="grid gap-3 rounded-xl border bg-muted/30 p-5">
-      <h2 className="font-medium">Akses portal customer</h2>
+    <Panel>
+      <PanelHeader title="Akses portal customer" />
+      <PanelBody className="grid gap-3">
       <p className="text-sm text-muted-foreground">
         {customer.email
           ? `Kirim tautan masuk sekali pakai ke ${customer.email}. Customer membuka tautannya sendiri, tidak perlu kata sandi.`
@@ -114,6 +121,7 @@ function MagicLinkPanel({ customer }: { customer: Customer }) {
         </Button>
       </form>
       <FormMessages error={state.error} message={state.message} />
-    </div>
+      </PanelBody>
+    </Panel>
   );
 }

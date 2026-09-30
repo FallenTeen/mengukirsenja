@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { CustomerProfileForm } from "@/components/customer/profile-form";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
+import { Panel, PanelBody, PanelHeader } from "@/components/dashboard/panel";
 import { requireCustomer } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Profil" };
@@ -19,18 +20,23 @@ export default async function CustomerProfilePage() {
   if (!customer) redirect("/customer");
 
   return (
-    <div className="mx-auto grid w-full max-w-2xl gap-10 px-6 py-16">
-      <PageIntro
+    <DashboardShell>
+      <PageHeader
         label="Profil"
         title="Data Anda"
         description="Nama, WhatsApp, dan alamat yang tercatat pada pesanan Anda."
       />
-      <CustomerProfileForm
-        name={customer.name}
-        email={customer.email}
-        phone={customer.phone}
-        address={customer.address}
-      />
-    </div>
+      <Panel className="max-w-3xl">
+        <PanelHeader title="Informasi akun" />
+        <PanelBody>
+          <CustomerProfileForm
+            name={customer.name}
+            email={customer.email}
+            phone={customer.phone}
+            address={customer.address}
+          />
+        </PanelBody>
+      </Panel>
+    </DashboardShell>
   );
 }

@@ -3,7 +3,13 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin, Sparkles } from "lucide-react";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { CustomerWhatsAppButton } from "@/components/customer/customer-whatsapp-button";
-import { PageIntro, SectionLabel } from "@/components/site/page-intro";
+import {
+  DashboardShell,
+  EmptyState,
+  PageHeader,
+  SectionHeader,
+} from "@/components/dashboard/page-shell";
+import { Panel } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { requireCustomer } from "@/lib/auth/session";
 import { formatDateRange, formatRupiah } from "@/lib/format";
@@ -27,8 +33,8 @@ export default async function CustomerOverviewPage() {
   const firstName = name.split(" ")[0];
 
   return (
-    <div className="mx-auto grid w-full max-w-4xl gap-12 px-6 py-16">
-      <PageIntro
+    <DashboardShell>
+      <PageHeader
         label="Portal Customer"
         title={`Halo, ${firstName}`}
         description={
@@ -39,27 +45,27 @@ export default async function CustomerOverviewPage() {
       />
 
       {featured ? (
-        <section className="grid gap-6">
-          <SectionLabel>Acara Anda</SectionLabel>
+        <section className="grid gap-3">
+          <SectionHeader title="Acara Anda" />
 
-          <article className="grid gap-6 rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
+          <Panel className="grid gap-4 p-4 sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="grid gap-2">
+              <div className="grid gap-1.5">
                 <p className="font-mono text-xs text-muted-foreground">{featured.order_code}</p>
-                <h2 className="font-display text-2xl">
+                <h2 className="text-lg font-medium">
                   {featured.event_title || "Dekorasi pernikahan"}
                 </h2>
                 <StatusBadge status={featured.status} />
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">Estimasi total</p>
-                <p className="font-display text-2xl text-terracotta tabular-nums">
+                <p className="font-display text-xl text-terracotta tabular-nums">
                   {formatRupiah(toNumber(featured.total_estimate))}
                 </p>
               </div>
             </div>
 
-            <dl className="grid gap-4 sm:grid-cols-2">
+            <dl className="grid gap-3 sm:grid-cols-2">
               <div className="flex items-start gap-2.5">
                 <CalendarDays className="mt-0.5 size-4 shrink-0 text-terracotta" aria-hidden />
                 <div className="grid gap-0.5">
@@ -77,7 +83,7 @@ export default async function CustomerOverviewPage() {
             </dl>
 
             {featured.status === "awaiting_customer_confirmation" ? (
-              <p className="flex items-start gap-2.5 rounded-xl border border-amber/40 bg-amber/10 px-4 py-3 text-sm">
+              <p className="flex items-start gap-2 rounded-md border border-amber/40 bg-amber/10 px-3 py-2.5 text-sm">
                 <Sparkles className="mt-0.5 size-4 shrink-0 text-gold" aria-hidden />
                 <span>
                   Rincian pesanan Anda sudah siap dan menunggu konfirmasi. Buka pesanan untuk
@@ -86,7 +92,7 @@ export default async function CustomerOverviewPage() {
               </p>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               <Button render={<Link href={`/customer/orders/${featured.id}`} />}>
                 {featured.status === "awaiting_customer_confirmation"
                   ? "Lihat & Konfirmasi"
@@ -99,40 +105,40 @@ export default async function CustomerOverviewPage() {
                 context="membahas detail acara saya"
               />
             </div>
-          </article>
+          </Panel>
         </section>
       ) : (
-        <p className="rounded-xl border border-dashed px-5 py-8 text-sm text-muted-foreground">
+        <EmptyState className="py-4">
           Belum ada pesanan. Setelah Anda mengajukan pesanan melalui website, hubungi admin agar
           tautan pesanan Anda dikirim ke email ini.
-        </p>
+        </EmptyState>
       )}
 
       {orders.length > 1 ? (
-        <section className="grid gap-4">
-          <SectionLabel>Pesanan lainnya</SectionLabel>
-          <ul className="grid gap-3">
+        <section className="grid gap-3">
+          <SectionHeader title="Pesanan lainnya" count={orders.length - 1} />
+          <ul className="divide-y overflow-hidden rounded-lg border bg-card">
             {orders
               .filter((order) => order.id !== featured?.id)
               .map((order) => (
-                <li key={order.id}>
-                  <Link
-                    href={`/customer/orders/${order.id}`}
-                    className="flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3 transition-colors hover:bg-muted/40"
-                  >
+                <li key={order.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5 sm:px-4">
+                  <div className="grid min-w-0 gap-0.5">
                     <span className="font-mono text-sm">{order.order_code}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {formatDateRange(order.event_date, order.event_end_date)}
+                    <span className="truncate text-xs text-muted-foreground">
+                      {order.event_title || formatDateRange(order.event_date, order.event_end_date)}
                     </span>
-                    <StatusBadge status={order.status} className="ml-auto" />
-                  </Link>
+                  </div>
+                  <StatusBadge status={order.status} className="sm:ml-auto" />
+                  <Button size="xs" variant="outline" className="ml-auto sm:ml-0" render={<Link href={`/customer/orders/${order.id}`} />}>
+                    Lihat pesanan
+                  </Button>
                 </li>
               ))}
           </ul>
         </section>
       ) : null}
 
-      <footer className="grid gap-3 border-t pt-8 text-sm text-muted-foreground">
+      <footer className="grid gap-3 border-t pt-4 text-sm text-muted-foreground">
         <p>
           Ada yang ingin ditanyakan? Hubungi kami di {STUDIO.hours}. {STUDIO.responseTime}
         </p>
@@ -148,6 +154,6 @@ export default async function CustomerOverviewPage() {
           </Link>
         </div>
       </footer>
-    </div>
+    </DashboardShell>
   );
 }

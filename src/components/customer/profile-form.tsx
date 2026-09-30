@@ -30,7 +30,7 @@ export function CustomerProfileForm({
   const errors = state.fieldErrors ?? {};
 
   return (
-    <form action={formAction} className="grid gap-5" noValidate>
+    <form action={formAction} className="grid gap-4" noValidate>
       <Field name="name" label="Nama" required error={errors.name}>
         <Input id="name" name="name" defaultValue={name} autoComplete="name" required />
       </Field>

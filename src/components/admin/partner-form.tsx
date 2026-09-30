@@ -25,10 +25,10 @@ export function PartnerForm({
   const values = state.values;
 
   return (
-    <form action={formAction} className="grid gap-6" noValidate>
+    <form action={formAction} className="grid gap-4" noValidate>
       {partner ? <input type="hidden" name="id" value={partner.id} /> : null}
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field name="name" label="Nama partner" required error={errors?.name}>
           <Input
             id="name"

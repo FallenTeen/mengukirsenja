@@ -50,10 +50,15 @@ export function AdminNav({ name }: { name: string | null }) {
             <Link
               key={href}
               href={href}
-              aria-current={pathname === href ? "page" : undefined}
+              aria-current={
+                pathname === href || (href !== "/admin" && pathname.startsWith(`${href}/`))
+                  ? "page"
+                  : undefined
+              }
               className={cn(
                 "flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:gap-3",
-                pathname === href && "bg-muted font-medium text-foreground",
+                (pathname === href || (href !== "/admin" && pathname.startsWith(`${href}/`))) &&
+                  "bg-muted font-medium text-foreground",
               )}
             >
               <Icon className="size-4 shrink-0" aria-hidden />

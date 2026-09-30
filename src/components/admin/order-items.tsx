@@ -2,7 +2,8 @@
 
 import { useActionState, useState } from "react";
 import { ChevronDown, Eye, EyeOff, Loader2, Plus, Save, Trash2 } from "lucide-react";
-import { CheckboxField, Field, FormMessages, SelectInput } from "@/components/admin/field";import { Button } from "@/components/ui/button";
+import { CheckboxField, Field, FormMessages, SelectInput } from "@/components/admin/field";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -52,13 +53,41 @@ export function OrderItemsPanel({
   catalogItems: CatalogOption[];
 }) {
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-4">
       {order.items.length === 0 ? (
         <p className="rounded-lg border border-dashed px-4 py-6 text-sm text-muted-foreground">
           Belum ada item. Tambahkan paket katalog atau item kustom di bawah.
         </p>
       ) : (
-        <div className="rounded-xl border">
+        <>
+        <div className="grid gap-2 md:hidden">
+          {order.items.map((item) => (
+            <article key={item.id} className="grid gap-3 rounded-lg border bg-card p-3">
+              <div className="flex items-start justify-between gap-2">
+                <ItemCell item={item} prefix="mobile" />
+                <div className="flex shrink-0 items-center gap-1">
+                  <VisibilityToggle item={item} compact />
+                  <RemoveItem orderId={order.id} item={item} compact />
+                </div>
+              </div>
+              <dl className="grid grid-cols-3 gap-2 border-t pt-2 text-xs">
+                <div>
+                  <dt className="text-muted-foreground">Jumlah</dt>
+                  <dd className="mt-0.5 tabular-nums">{toNumber(item.quantity)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Harga satuan</dt>
+                  <dd className="mt-0.5 tabular-nums">{formatRupiah(toNumber(item.unit_price))}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Subtotal</dt>
+                  <dd className="mt-0.5 font-medium tabular-nums">{formatRupiah(toNumber(item.subtotal))}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+        <div className="hidden overflow-hidden rounded-lg border md:block">
           <Table>
             <TableHeader className="bg-muted/40">
               <TableRow>
@@ -83,7 +112,7 @@ export function OrderItemsPanel({
               {order.items.map((item) => (
                 <TableRow key={item.id} className="align-top">
                   <TableCell className="w-full whitespace-normal">
-                    <ItemCell item={item} />
+                    <ItemCell item={item} prefix="desktop" />
                   </TableCell>
                   <TableCell className="tabular-nums">{toNumber(item.quantity)}</TableCell>
                   <TableCell className="tabular-nums">
@@ -103,6 +132,7 @@ export function OrderItemsPanel({
             </TableBody>
           </Table>
         </div>
+        </>
       )}
 
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-t pt-4">
@@ -129,7 +159,7 @@ export function OrderItemsPanel({
   );
 }
 
-function ItemCell({ item }: { item: OrderItemEntry }) {
+function ItemCell({ item, prefix }: { item: OrderItemEntry; prefix: string }) {
   return (
     <div className="grid gap-1">
       <span className="font-medium">{item.name}</span>
@@ -145,13 +175,13 @@ function ItemCell({ item }: { item: OrderItemEntry }) {
           <ChevronDown data-icon="inline-start" className="transition-transform group-open:rotate-180" />
           Ubah item
         </summary>
-        <EditItemForm item={item} />
+          <EditItemForm item={item} prefix={prefix} />
       </details>
     </div>
   );
 }
 
-function EditItemForm({ item }: { item: OrderItemEntry }) {
+function EditItemForm({ item, prefix }: { item: OrderItemEntry; prefix: string }) {
   const [state, formAction, pending] = useActionState(updateOrderItem, initialState);
 
   return (
@@ -163,19 +193,19 @@ function EditItemForm({ item }: { item: OrderItemEntry }) {
       <input type="hidden" name="itemId" value={item.id} />
       <input type="hidden" name="orderId" value={item.order_id} />
 
-      <Field name={`name-${item.id}`} label="Nama item" required error={state.fieldErrors?.name}>
-        <Input id={`name-${item.id}`} name="name" defaultValue={item.name} />
+      <Field name={`${prefix}-name-${item.id}`} label="Nama item" required error={state.fieldErrors?.name}>
+        <Input id={`${prefix}-name-${item.id}`} name="name" defaultValue={item.name} />
       </Field>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Field
-          name={`quantity-${item.id}`}
+          name={`${prefix}-quantity-${item.id}`}
           label="Jumlah"
           required
           error={state.fieldErrors?.quantity}
         >
           <Input
-            id={`quantity-${item.id}`}
+            id={`${prefix}-quantity-${item.id}`}
             name="quantity"
             type="number"
             min="0.5"
@@ -185,13 +215,13 @@ function EditItemForm({ item }: { item: OrderItemEntry }) {
         </Field>
 
         <Field
-          name={`unitPrice-${item.id}`}
+          name={`${prefix}-unitPrice-${item.id}`}
           label="Harga satuan"
           required
           error={state.fieldErrors?.unitPrice}
         >
           <Input
-            id={`unitPrice-${item.id}`}
+            id={`${prefix}-unitPrice-${item.id}`}
             name="unitPrice"
             inputMode="numeric"
             defaultValue={String(toNumber(item.unit_price))}
@@ -200,12 +230,12 @@ function EditItemForm({ item }: { item: OrderItemEntry }) {
       </div>
 
       <Field
-        name={`description-${item.id}`}
+        name={`${prefix}-description-${item.id}`}
         label="Deskripsi"
         error={state.fieldErrors?.description}
       >
         <Textarea
-          id={`description-${item.id}`}
+          id={`${prefix}-description-${item.id}`}
           name="description"
           rows={2}
           defaultValue={item.description ?? ""}
@@ -234,7 +264,7 @@ function EditItemForm({ item }: { item: OrderItemEntry }) {
   );
 }
 
-function VisibilityToggle({ item }: { item: OrderItemEntry }) {
+function VisibilityToggle({ item, compact = false }: { item: OrderItemEntry; compact?: boolean }) {
   const [state, formAction, pending] = useActionState(toggleOrderItemVisibility, initialState);
 
   return (
@@ -245,7 +275,7 @@ function VisibilityToggle({ item }: { item: OrderItemEntry }) {
       <input type="hidden" name="customerVisible" value={item.customer_visible ? "on" : ""} />
       <Button
         type="submit"
-        size="icon-sm"
+        size={compact ? "xs" : "icon-sm"}
         variant="ghost"
         disabled={pending}
         title={state.error ?? (item.customer_visible ? "Sembunyikan dari customer" : "Tampilkan ke customer")}
@@ -257,15 +287,27 @@ function VisibilityToggle({ item }: { item: OrderItemEntry }) {
         ) : (
           <EyeOff className="text-muted-foreground" />
         )}
-        <span className="sr-only">
-          {item.customer_visible ? "Sembunyikan dari customer" : "Tampilkan ke customer"}
-        </span>
+        {compact ? (
+          item.customer_visible ? "Sembunyikan" : "Tampilkan"
+        ) : (
+          <span className="sr-only">
+            {item.customer_visible ? "Sembunyikan dari customer" : "Tampilkan ke customer"}
+          </span>
+        )}
       </Button>
     </form>
   );
 }
 
-function RemoveItem({ orderId, item }: { orderId: string; item: OrderItemEntry }) {
+function RemoveItem({
+  orderId,
+  item,
+  compact = false,
+}: {
+  orderId: string;
+  item: OrderItemEntry;
+  compact?: boolean;
+}) {
   const [state, formAction, pending] = useActionState(removeOrderItem, initialState);
 
   return (
@@ -279,13 +321,13 @@ function RemoveItem({ orderId, item }: { orderId: string; item: OrderItemEntry }
       <input type="hidden" name="orderId" value={orderId} />
       <Button
         type="submit"
-        size="icon-sm"
+        size={compact ? "xs" : "icon-sm"}
         variant="ghost"
         disabled={pending}
         title={state.error ?? `Hapus ${item.name}`}
       >
         {pending ? <Loader2 className="animate-spin" /> : <Trash2 />}
-        <span className="sr-only">Hapus {item.name}</span>
+        {compact ? "Hapus" : <span className="sr-only">Hapus {item.name}</span>}
       </Button>
     </form>
   );

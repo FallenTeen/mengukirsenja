@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { SearchFilter } from "@/components/admin/search-filter";
 import { PartnerTable } from "@/components/admin/tables";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { Button } from "@/components/ui/button";
 import { getAdminPartners } from "@/lib/queries/admin-content";
 
@@ -22,18 +22,18 @@ export default async function AdminPartnersPage({ searchParams }: PageProps<"/ad
     : partners;
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <PageIntro
-          label="Admin"
-          title="Partner"
-          description="Rekan yang mengerjakan layanan bersama, seperti Basssound untuk paket Soundsystem. Partner hanya tampil di katalog bila paketnya memang menunjuk partner tersebut."
-        />
-        <Button size="lg" render={<Link href="/admin/partners/new" />}>
-          <Plus data-icon="inline-start" />
-          Partner Baru
-        </Button>
-      </div>
+    <DashboardShell>
+      <PageHeader
+        label="Admin"
+        title="Partner"
+        description="Rekan untuk layanan pendukung."
+        actions={
+          <Button size="sm" render={<Link href="/admin/partners/new" />}>
+            <Plus data-icon="inline-start" />
+            Partner Baru
+          </Button>
+        }
+      />
 
       <SearchFilter action="/admin/partners" query={search ?? ""} placeholder="Cari nama atau kontak" />
 
@@ -44,6 +44,6 @@ export default async function AdminPartnersPage({ searchParams }: PageProps<"/ad
       ) : (
         <PartnerTable partners={filtered} />
       )}
-    </div>
+    </DashboardShell>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CalendarGrid } from "@/components/admin/calendar-grid";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { currentMonthKey } from "@/lib/calendar";
 
 export const metadata: Metadata = { title: "Kalender" };
@@ -10,14 +10,14 @@ export default async function AdminCalendarPage({ searchParams }: PageProps<"/ad
   const raw = Array.isArray(params.month) ? params.month[0] : params.month;
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
-      <PageIntro
+    <DashboardShell>
+      <PageHeader
         label="Admin"
         title="Kalender Acara"
-        description="Satu tanggal bisa dipakai lebih dari satu acara. Klik chip pesanan untuk membuka workspace-nya, atau ikon plus untuk membuat pesanan manual pada tanggal tersebut."
+        description="Kelola jadwal acara dan buka pesanan dari tanggalnya."
       />
 
       <CalendarGrid month={raw || currentMonthKey()} />
-    </div>
+    </DashboardShell>
   );
 }

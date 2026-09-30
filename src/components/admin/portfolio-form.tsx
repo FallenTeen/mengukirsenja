@@ -27,7 +27,7 @@ export function PortfolioItemForm({
   const values = state.values;
 
   return (
-    <form action={formAction} className="grid gap-6" noValidate>
+    <form action={formAction} className="grid gap-4" noValidate>
       {item ? (
         <>
           <input type="hidden" name="id" value={item.id} />
@@ -35,7 +35,7 @@ export function PortfolioItemForm({
         </>
       ) : null}
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field name="title" label="Judul" required error={errors?.title}>
           <Input
             id="title"

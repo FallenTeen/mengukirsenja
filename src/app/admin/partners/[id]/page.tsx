@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PartnerForm } from "@/components/admin/partner-form";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
+import { Panel, PanelBody, PanelHeader } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { getAdminPartners, getAdminServices } from "@/lib/queries/admin-content";
 
@@ -17,17 +18,20 @@ export default async function EditPartnerPage({ params }: PageProps<"/admin/part
   if (!partner) notFound();
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
+    <DashboardShell>
       <Button variant="ghost" size="sm" className="-ml-3 w-fit" render={<Link href="/admin/partners" />}>
         <ArrowLeft data-icon="inline-start" />
         Kembali ke partner
       </Button>
 
-      <PageIntro label="Partner" title={partner.name} description={partner.service_name ?? "Semua layanan"} />
+      <PageHeader label="Partner" title={partner.name} description={partner.service_name ?? "Semua layanan"} />
 
-      <div className="max-w-3xl">
-        <PartnerForm partner={partner} services={services} />
-      </div>
-    </div>
+      <Panel className="max-w-4xl">
+        <PanelHeader title="Informasi partner" />
+        <PanelBody>
+          <PartnerForm partner={partner} services={services} />
+        </PanelBody>
+      </Panel>
+    </DashboardShell>
   );
 }

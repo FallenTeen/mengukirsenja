@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { PortfolioItemForm } from "@/components/admin/portfolio-form";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
+import { Panel, PanelBody, PanelHeader } from "@/components/dashboard/panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +23,7 @@ export default async function EditPortfolioItemPage({
   if (!item) notFound();
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
+    <DashboardShell>
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="ghost" size="sm" className="-ml-3" render={<Link href="/admin/portfolio" />}>
           <ArrowLeft data-icon="inline-start" />
@@ -42,15 +43,18 @@ export default async function EditPortfolioItemPage({
         </div>
       </div>
 
-      <PageIntro
+      <PageHeader
         label="Portfolio"
         title={item.title}
         description={`Tautan publik: /portfolio/${item.slug}`}
       />
 
-      <div className="max-w-3xl">
-        <PortfolioItemForm item={item} services={services} />
-      </div>
-    </div>
+      <Panel className="max-w-4xl">
+        <PanelHeader title="Informasi portfolio" />
+        <PanelBody>
+          <PortfolioItemForm item={item} services={services} />
+        </PanelBody>
+      </Panel>
+    </DashboardShell>
   );
 }

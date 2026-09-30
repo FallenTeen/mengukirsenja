@@ -47,13 +47,13 @@ function Toggle({
       <input type="hidden" name={field} value={String(value)} />
       <Button
         type="submit"
-        size="icon-xs"
+        size="xs"
         variant="ghost"
         disabled={pending}
         title={state.error ?? label}
       >
         {pending ? <Loader2 className="animate-spin" /> : <Icon />}
-        <span className="sr-only">{label}</span>
+        {label}
       </Button>
     </form>
   );
@@ -81,13 +81,13 @@ function Remove({
       <input type="hidden" name="id" value={id} />
       <Button
         type="submit"
-        size="icon-xs"
+        size="xs"
         variant="ghost"
         disabled={pending}
         title={state.error ?? `Hapus ${name}`}
       >
         {pending ? <Loader2 className="animate-spin" /> : <Trash2 />}
-        <span className="sr-only">Hapus {name}</span>
+        Hapus
       </Button>
     </form>
   );

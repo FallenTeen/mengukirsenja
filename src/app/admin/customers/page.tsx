@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { SearchFilter } from "@/components/admin/search-filter";
 import { CustomerTable } from "@/components/admin/tables";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { adminToCustomerMessage, buildWhatsAppLink } from "@/lib/whatsapp";
 import { getAdminCustomers } from "@/lib/queries/admin-content";
 
@@ -23,11 +23,11 @@ export default async function AdminCustomersPage({ searchParams }: PageProps<"/a
   });
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
-      <PageIntro
+    <DashboardShell>
+      <PageHeader
         label="Admin"
         title="Customer"
-        description="Customer dibuat otomatis dari form permintaan, tanpa akun. Buka detail untuk mengirim tautan masuk atau menghubungi lewat WhatsApp."
+        description="Buka detail untuk memperbarui kontak, mengirim tautan masuk, atau melihat riwayat pesanan."
       />
 
       <SearchFilter
@@ -77,6 +77,6 @@ export default async function AdminCustomersPage({ searchParams }: PageProps<"/a
           </section>
         </>
       )}
-    </div>
+    </DashboardShell>
   );
 }

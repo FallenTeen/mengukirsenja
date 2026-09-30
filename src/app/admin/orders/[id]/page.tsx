@@ -8,7 +8,7 @@ import { OrderItemsPanel } from "@/components/admin/order-items";
 import { CancelOrderButton, OrderStatusForm } from "@/components/admin/order-status-form";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { ReferenceGallery, ServicesOfInterest } from "@/components/order/intake-details";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { Button } from "@/components/ui/button";
 import { formatDateRange, formatRupiah } from "@/lib/format";
 import { ORDER_SOURCE_LABEL, toNumber } from "@/lib/order-status";
@@ -30,7 +30,7 @@ export default async function AdminOrderPage({
   const created = Array.isArray(query.created) ? query.created[0] : query.created;
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
+    <DashboardShell>
       <Button
         variant="ghost"
         size="sm"
@@ -41,37 +41,23 @@ export default async function AdminOrderPage({
         Kembali ke daftar pesanan
       </Button>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="grid gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-display text-3xl">{order.order_code}</h1>
-            <StatusBadge status={order.status} />
-            <span className="text-xs text-muted-foreground">
-              {ORDER_SOURCE_LABEL[order.source]} · dibuat{" "}
-              {new Date(order.created_at).toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-          <PageIntro
-            label="Pesanan"
-            title={order.event_title || "Belum ada judul acara"}
-            description={order.venue_name || "Lokasi belum diisi."}
-          />
-        </div>
-
-        <div className="text-right">
+      <PageHeader
+        label={order.order_code}
+        title={order.event_title || "Belum ada judul acara"}
+        description={`${order.venue_name || "Lokasi belum diisi."} · ${ORDER_SOURCE_LABEL[order.source]} · dibuat ${new Date(order.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}`}
+        meta={<StatusBadge status={order.status} />}
+        actions={
+          <div className="text-right">
           <p className="text-xs text-muted-foreground">Estimasi total</p>
-          <p className="font-display text-3xl text-terracotta tabular-nums">
+          <p className="font-display text-2xl text-terracotta tabular-nums">
             {formatRupiah(toNumber(order.total_estimate))}
           </p>
           <p className="text-xs text-muted-foreground">
             {order.item_count} item · dihitung ulang oleh server
           </p>
-        </div>
-      </div>
+          </div>
+        }
+      />
 
       {created ? (
         <p
@@ -82,8 +68,8 @@ export default async function AdminOrderPage({
         </p>
       ) : null}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="grid gap-6">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="grid content-start gap-4">
           <WorkspaceSection
             title="Item Pesanan"
             description="Paket katalog disalin apa adanya saat ditambahkan, jadi perubahan harga katalog tidak mengubah pesanan ini."
@@ -111,7 +97,7 @@ export default async function AdminOrderPage({
           </WorkspaceSection>
         </div>
 
-        <aside className="grid content-start gap-6">
+        <aside className="grid content-start gap-4">
           <WorkspaceSection title="Alur Pengerjaan" compact>
             <div className="grid gap-4">
               <OrderStatusForm orderId={order.id} status={order.status} />
@@ -211,7 +197,7 @@ export default async function AdminOrderPage({
           </WorkspaceSection>
         </aside>
       </div>
-    </div>
+    </DashboardShell>
   );
 }
 
@@ -227,10 +213,10 @@ function WorkspaceSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border p-5">
-      <div className={compact ? "" : "mb-5 grid gap-1.5"}>
-        <h2 className="font-display text-lg">{title}</h2>
-        {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
+    <section className="rounded-lg border bg-card p-3.5 sm:p-4">
+      <div className={compact ? "mb-3" : "mb-3 grid gap-1"}>
+        <h2 className="text-sm font-medium">{title}</h2>
+        {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
       </div>
       {children}
     </section>

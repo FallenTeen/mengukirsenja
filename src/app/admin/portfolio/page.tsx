@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { FilterSelect, SearchFilter } from "@/components/admin/search-filter";
 import { PortfolioTable } from "@/components/admin/tables";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { Button } from "@/components/ui/button";
 import { getAdminPortfolioItems, getAdminServices } from "@/lib/queries/admin-content";
 
@@ -22,18 +22,18 @@ export default async function AdminPortfolioPage({
   ]);
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <PageIntro
-          label="Admin"
-          title="Portfolio"
-          description="Kelola dokumentasi acara yang tampil di halaman portfolio. Item nonaktif disembunyikan dari website publik."
-        />
-        <Button size="lg" render={<Link href="/admin/portfolio/new" />}>
-          <Plus data-icon="inline-start" />
-          Portfolio Baru
-        </Button>
-      </div>
+    <DashboardShell>
+      <PageHeader
+        label="Admin"
+        title="Portfolio"
+        description="Kelola dokumentasi acara yang tampil di website publik."
+        actions={
+          <Button size="sm" render={<Link href="/admin/portfolio/new" />}>
+            <Plus data-icon="inline-start" />
+            Portfolio Baru
+          </Button>
+        }
+      />
 
       <SearchFilter
         action="/admin/portfolio"
@@ -58,6 +58,6 @@ export default async function AdminPortfolioPage({
       ) : (
         <PortfolioTable items={items} />
       )}
-    </div>
+    </DashboardShell>
   );
 }

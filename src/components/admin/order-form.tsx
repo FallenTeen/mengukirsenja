@@ -24,7 +24,7 @@ export function OrderEventForm({ order }: { order: AdminOrderDetail }) {
   const values = state.values;
 
   return (
-    <form action={formAction} className="grid gap-6" noValidate>
+    <form action={formAction} className="grid gap-4" noValidate>
       <input type="hidden" name="orderId" value={order.id} />
 
       <EventFields
@@ -80,7 +80,7 @@ export function ManualOrderForm({
   const values = state.values;
 
   return (
-    <form action={formAction} className="grid gap-8" noValidate>
+    <form action={formAction} className="grid gap-5" noValidate>
       <CustomerFields errors={errors} values={values} idPrefix="" />
 
       <EventFields
@@ -121,7 +121,7 @@ export function OrderCustomerForm({ order }: { order: AdminOrderDetail }) {
   }
 
   return (
-    <form action={formAction} className="grid gap-6" noValidate>
+    <form action={formAction} className="grid gap-4" noValidate>
       <input type="hidden" name="orderId" value={order.id} />
       <input type="hidden" name="customerId" value={customer.id} />
 
@@ -170,7 +170,7 @@ function CustomerFields({
   const id = (key: string) => `${idPrefix}${key}`;
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2">
+    <div className="grid gap-4 sm:grid-cols-2">
       <Field name={id("name")} label="Nama customer" required error={errors?.name}>
         <Input
           id={id("name")}
@@ -240,7 +240,7 @@ function EventFields({
 
   return (
     <>
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Field
           name="eventTitle"
           label="Judul acara"

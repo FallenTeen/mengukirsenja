@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { FilterSelect, SearchFilter } from "@/components/admin/search-filter";
 import { CatalogTable } from "@/components/admin/tables";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { Button } from "@/components/ui/button";
 import { getAdminCatalogItems, getAdminServices } from "@/lib/queries/admin-content";
 
@@ -20,18 +20,18 @@ export default async function AdminCatalogPage({ searchParams }: PageProps<"/adm
   ]);
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <PageIntro
-          label="Admin"
-          title="Katalog"
-          description="Kelola paket Decoration dan paket layanan pendukung, termasuk harga, gambar, dan urutan tampil."
-        />
-        <Button size="lg" render={<Link href="/admin/catalog/new" />}>
-          <Plus data-icon="inline-start" />
-          Paket Baru
-        </Button>
-      </div>
+    <DashboardShell>
+      <PageHeader
+        label="Admin"
+        title="Katalog"
+        description="Kelola paket dan layanan pendukung, termasuk harga, gambar, dan urutan tampil."
+        actions={
+          <Button size="sm" render={<Link href="/admin/catalog/new" />}>
+            <Plus data-icon="inline-start" />
+            Paket Baru
+          </Button>
+        }
+      />
 
       <SearchFilter
         action="/admin/catalog"
@@ -56,6 +56,6 @@ export default async function AdminCatalogPage({ searchParams }: PageProps<"/adm
       ) : (
         <CatalogTable items={items} />
       )}
-    </div>
+    </DashboardShell>
   );
 }

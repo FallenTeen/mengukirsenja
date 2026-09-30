@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { PortfolioItemForm } from "@/components/admin/portfolio-form";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
+import { Panel, PanelBody, PanelHeader } from "@/components/dashboard/panel";
 import { Button } from "@/components/ui/button";
 import { getAdminServices } from "@/lib/queries/admin-content";
 
@@ -12,7 +13,7 @@ export default async function NewPortfolioItemPage() {
   const services = await getAdminServices();
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
+    <DashboardShell>
       <Button
         variant="ghost"
         size="sm"
@@ -23,15 +24,18 @@ export default async function NewPortfolioItemPage() {
         Kembali ke portfolio
       </Button>
 
-      <PageIntro
+      <PageHeader
         label="Portfolio"
         title="Portfolio Baru"
         description="Slug tautan dibuat otomatis dari judul. Unggah foto versi mendatar agar tampil optimal di halaman portfolio."
       />
 
-      <div className="max-w-3xl">
-        <PortfolioItemForm services={services} />
-      </div>
-    </div>
+      <Panel className="max-w-4xl">
+        <PanelHeader title="Informasi portfolio" />
+        <PanelBody>
+          <PortfolioItemForm services={services} />
+        </PanelBody>
+      </Panel>
+    </DashboardShell>
   );
 }

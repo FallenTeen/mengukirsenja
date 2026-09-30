@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft, Eye, MessageCircle } from "lucide-react";
 import { CustomerForm } from "@/components/admin/customer-form";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatDateRange } from "@/lib/format";
@@ -25,32 +25,30 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
   );
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
+    <DashboardShell>
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="ghost" size="sm" className="-ml-3" render={<Link href="/admin/customers" />}>
           <ArrowLeft data-icon="inline-start" />
           Kembali ke customer
         </Button>
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          {whatsappHref ? (
-            <Button
-              size="sm"
-              variant="outline"
-              render={
-                <Link href={whatsappHref} target="_blank" rel="noopener noreferrer" />
-              }
-            >
-              <MessageCircle data-icon="inline-start" />
-              Hubungi via WhatsApp
-            </Button>
-          ) : null}
-        </div>
       </div>
 
-      <PageIntro
+      <PageHeader
         label="Customer"
         title={customer.name || "Tanpa nama"}
         description={`Bergabung sejak ${formatDate(customer.created_at?.slice(0, 10)) ?? "-"}`}
+        actions={
+          whatsappHref ? (
+            <Button
+              size="sm"
+              variant="outline"
+              render={<Link href={whatsappHref} target="_blank" rel="noopener noreferrer" />}
+            >
+              <MessageCircle data-icon="inline-start" />
+              WhatsApp
+            </Button>
+          ) : undefined
+        }
       />
 
       <div className="flex flex-wrap gap-2">
@@ -66,27 +64,31 @@ export default async function CustomerDetailPage({ params }: PageProps<"/admin/c
       <CustomerForm customer={customer} />
 
       <section className="grid gap-3">
-        <h2 className="text-lg">Riwayat pesanan ({customer.order_count})</h2>
+        <h2 className="text-base font-medium">Riwayat pesanan ({customer.order_count})</h2>
         {customer.orders.length === 0 ? (
           <p className="rounded-lg border border-dashed px-4 py-6 text-sm text-muted-foreground">
             Customer ini belum pernah membuat pesanan.
           </p>
         ) : (
-          <ul className="divide-y overflow-hidden rounded-xl border">
+          <ul className="divide-y overflow-hidden rounded-lg border bg-card">
             {customer.orders.map((order) => (
-              <li key={order.id} className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm">
+              <li key={order.id} className="flex flex-wrap items-center gap-2 px-3 py-2.5 text-sm sm:px-4">
                 <span className="font-mono">{order.order_code}</span>
                 <Badge variant="outline">
                   {ORDER_STATUS_LABEL[order.status] ?? order.status}
                 </Badge>
-                <span className="ml-auto text-muted-foreground">
+                <span className="text-xs text-muted-foreground sm:ml-auto sm:text-sm">
                   {formatDateRange(order.event_date, order.event_end_date)}
                 </span>
+                <Button size="xs" variant="outline" className="ml-auto sm:ml-0" render={<Link href={`/admin/orders/${order.id}`} />}>
+                  <Eye data-icon="inline-start" />
+                  Lihat pesanan
+                </Button>
               </li>
             ))}
           </ul>
         )}
       </section>
-    </div>
+    </DashboardShell>
   );
 }

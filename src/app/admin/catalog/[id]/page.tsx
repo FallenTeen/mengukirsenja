@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { CatalogItemForm } from "@/components/admin/catalog-form";
-import { PageIntro } from "@/components/site/page-intro";
+import { DashboardShell, PageHeader } from "@/components/dashboard/page-shell";
+import { Panel, PanelBody, PanelHeader } from "@/components/dashboard/panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +26,7 @@ export default async function EditCatalogItemPage({ params }: PageProps<"/admin/
   if (!item) notFound();
 
   return (
-    <div className="grid gap-8 p-6 lg:p-10">
+    <DashboardShell>
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="ghost" size="sm" className="-ml-3" render={<Link href="/admin/catalog" />}>
           <ArrowLeft data-icon="inline-start" />
@@ -45,15 +46,18 @@ export default async function EditCatalogItemPage({ params }: PageProps<"/admin/
         </div>
       </div>
 
-      <PageIntro
+      <PageHeader
         label="Katalog"
         title={item.name}
         description={`Tautan publik: /catalog/${item.slug}`}
       />
 
-      <div className="max-w-3xl">
-        <CatalogItemForm item={item} services={services} partners={partners} />
-      </div>
-    </div>
+      <Panel className="max-w-4xl">
+        <PanelHeader title="Informasi paket" />
+        <PanelBody>
+          <CatalogItemForm item={item} services={services} partners={partners} />
+        </PanelBody>
+      </Panel>
+    </DashboardShell>
   );
 }

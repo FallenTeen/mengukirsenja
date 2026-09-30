@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarPlus, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarPlus, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   CALENDAR_DAY_NAMES,
@@ -88,7 +88,7 @@ export async function CalendarGrid({ month }: { month: string }) {
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border">
+      <div className="overflow-x-auto rounded-lg border bg-card">
         <table className="w-full border-collapse text-sm">
           <caption className="sr-only">Kalender acara, {monthLabel(key)}</caption>
           <thead>
@@ -161,6 +161,10 @@ export async function CalendarGrid({ month }: { month: string }) {
                                 {entry.service_summary}
                               </span>
                             ) : null}
+                            <span className="mt-1 inline-flex items-center gap-1 text-[0.65rem] font-medium">
+                              <Eye className="size-3" aria-hidden />
+                              Lihat pesanan
+                            </span>
                           </Link>
                         ))}
                       </div>
@@ -185,7 +189,7 @@ export async function CalendarGrid({ month }: { month: string }) {
         one tappable row per event, so the overview survives at 360px.
       */}
       <section className="grid gap-3 lg:hidden">
-        <h2 className="text-lg">Acara bulan ini</h2>
+        <h2 className="text-base font-medium">Acara bulan ini</h2>
         {monthEntries.length === 0 ? (
           <p className="rounded-lg border border-dashed px-4 py-6 text-sm text-muted-foreground">
             Belum ada acara pada {monthLabel(key)}. Ketuk ikon plus pada tanggal mana pun, atau
@@ -194,25 +198,35 @@ export async function CalendarGrid({ month }: { month: string }) {
         ) : (
           <ul className="grid gap-2">
             {monthEntries.map((entry) => (
-              <li key={entry.id}>
-                <Link
-                  href={`/admin/orders/${entry.id}`}
-                  className={cn(
-                    "grid gap-1 rounded-lg border px-3 py-2.5 text-sm transition-colors",
-                    ORDER_STATUS_CLASS[entry.status],
-                  )}
-                >
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs">{entry.order_code}</span>
-                    <span className="font-medium">
-                      {entry.event_title || entry.customer_name}
-                    </span>
-                  </span>
-                  <span className="text-xs opacity-80">
-                    {formatDateRange(entry.event_date, entry.event_end_date)}
-                    {entry.service_summary ? ` · ${entry.service_summary}` : ""}
-                  </span>
-                </Link>
+              <li
+                key={entry.id}
+                className={cn(
+                  "grid gap-2 rounded-lg border px-3 py-2.5 text-sm",
+                  ORDER_STATUS_CLASS[entry.status],
+                )}
+              >
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-xs">{entry.order_code}</span>
+                  <span className="font-medium">{entry.event_title || entry.customer_name}</span>
+                </span>
+                <span className="text-xs opacity-80">
+                  {formatDateRange(entry.event_date, entry.event_end_date)}
+                  {entry.service_summary ? ` · ${entry.service_summary}` : ""}
+                </span>
+                <div className="flex flex-wrap justify-end gap-1.5 border-t border-current/10 pt-2">
+                  <Button size="xs" variant="outline" render={<Link href={`/admin/orders/${entry.id}`} />}>
+                    <Eye data-icon="inline-start" />
+                    Lihat pesanan
+                  </Button>
+                  <Button
+                    size="xs"
+                    variant="ghost"
+                    render={<Link href={`/admin/orders/new?date=${entry.event_date}`} />}
+                  >
+                    <CalendarPlus data-icon="inline-start" />
+                    Pesanan tanggal ini
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>
