@@ -1,139 +1,167 @@
-import Link from "next/link";
+﻿import { CalendarDays, Eye, MessageCircle, Pencil } from "lucide-react";
 import { formatDateRange, formatRupiah } from "@/lib/format";
 import { ORDER_SOURCE_LABEL, toNumber } from "@/lib/order-status";
 import { StatusBadge } from "@/components/admin/status-badge";
-import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/dashboard/page-shell";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  DataTableFrame,
+  RecordActions,
+  RecordCard,
+  RecordField,
+  RecordFields,
+  RecordList,
+  RowActionLink,
+  td,
+  tdActions,
+  th,
+  thEnd,
+} from "@/components/dashboard/data-table";
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 import type { OrderListEntry } from "@/lib/queries/admin-orders";
 
 /**
- * Read-only on purpose: the list answers "which order needs attention", and
- * every edit happens inside the order workspace. Server component, so it costs
- * no client JS beyond the links.
+ * The order list answers one question â€” which order needs attention â€” so it
+ * stays read-only. Every edit happens inside the order workspace, and that is
+ * exactly what the Aksi column says.
  *
- * Two renderings of the same data. Five columns of currency, dates, and status
- * are unreadable at 360px, so below `md` each order becomes a card with the
- * status, who it is for, and the total already visible; the table takes over
- * where there is room for it.
+ * Two renderings of the same data: five columns of currency, dates, and status
+ * are unreadable at 360px, so below `md` each order becomes a card with the same
+ * actions attached.
  */
 export function OrderTable({ orders }: { orders: OrderListEntry[] }) {
   if (orders.length === 0) {
-    return (
-      <p className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
-        Tidak ada pesanan yang cocok dengan filter ini.
-      </p>
-    );
+    return <EmptyState>Tidak ada pesanan yang cocok dengan filter ini.</EmptyState>;
   }
 
   return (
     <>
-      <div className="grid gap-3 md:hidden">
+      <RecordList>
         {orders.map((order) => (
-          <article key={order.id} className="grid gap-3 rounded-xl border bg-card p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="grid gap-0.5">
-                <span className="font-mono text-sm">{order.order_code}</span>
-                <span className="text-xs text-muted-foreground">
-                  {ORDER_SOURCE_LABEL[order.source]}
-                </span>
-              </div>
+          <RecordCard key={order.id}>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-sm">{order.order_code}</span>
               <StatusBadge status={order.status} />
-            </div>
-
-            <div className="grid gap-0.5">
-              <span className="text-sm font-medium">{order.customer?.name ?? "Tanpa nama"}</span>
-              <span className="text-sm">
-                {order.event_title || order.venue_name || "Belum diisi"}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {formatDateRange(order.event_date, order.event_end_date)}
+              <span className="ml-auto text-xs text-muted-foreground">
+                {ORDER_SOURCE_LABEL[order.source]}
               </span>
             </div>
 
-            <div className="flex items-center justify-between gap-3 border-t pt-3">
-              <span className="font-medium tabular-nums">
-                {formatRupiah(toNumber(order.total_estimate))}
-              </span>
-              <Button size="sm" variant="outline" render={<Link href={`/admin/orders/${order.id}`} />}>
-                Buka pesanan
-              </Button>
-            </div>
-          </article>
+            <RecordFields>
+              <RecordField label="Customer" value={order.customer?.name ?? "Tanpa nama"} />
+              <RecordField
+                label="Acara"
+                value={order.event_title || order.venue_name || "Belum diisi"}
+              />
+              <RecordField
+                label="Tanggal"
+                value={formatDateRange(order.event_date, order.event_end_date)}
+              />
+              <RecordField
+                label="Estimasi"
+                value={
+                  <span className="font-medium tabular-nums">
+                    {formatRupiah(toNumber(order.total_estimate))}
+                  </span>
+                }
+              />
+            </RecordFields>
+
+            <RecordActions>
+              <OrderRowActions order={order} />
+            </RecordActions>
+          </RecordCard>
         ))}
-      </div>
+      </RecordList>
 
-      <div className="hidden rounded-xl border md:block">
-        <Table>
-        <TableHeader className="bg-muted/40">
+      <DataTableFrame>
+        <TableHeader>
           <TableRow>
-            <TableHead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              Pesanan
-            </TableHead>
-            <TableHead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              Customer
-            </TableHead>
-            <TableHead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              Acara
-            </TableHead>
-            <TableHead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              Status
-            </TableHead>
-            <TableHead className="bg-muted/40 text-right text-xs uppercase tracking-wider text-muted-foreground">
-              Estimasi
-            </TableHead>
+            <TableHead className={th}>Pesanan</TableHead>
+            <TableHead className={th}>Customer</TableHead>
+            <TableHead className={th}>Acara</TableHead>
+            <TableHead className={th}>Status</TableHead>
+            <TableHead className={thEnd}>Estimasi</TableHead>
+            <TableHead className={thEnd}>Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {orders.map((order) => (
             <TableRow key={order.id}>
-              <TableCell className="whitespace-nowrap">
+              <TableCell className={`${td} whitespace-nowrap`}>
                 <div className="grid gap-0.5">
-                  <Button
-                    size="xs"
-                    variant="link"
-                    className="h-auto justify-start p-0 font-mono"
-                    render={<a href={`/admin/orders/${order.id}`} />}
-                  >
-                    {order.order_code}
-                  </Button>
+                  <span className="font-mono font-medium">{order.order_code}</span>
                   <span className="text-xs text-muted-foreground">
                     {ORDER_SOURCE_LABEL[order.source]}
                   </span>
                 </div>
               </TableCell>
 
-                <TableCell className="whitespace-nowrap">
-                  {order.customer?.name ?? "Tanpa nama"}
-                </TableCell>
+              <TableCell className={`${td} whitespace-normal`}>
+                {order.customer?.name ?? "Tanpa nama"}
+              </TableCell>
 
-              <TableCell className="whitespace-nowrap">
+              <TableCell className={`${td} whitespace-normal`}>
                 <div className="grid gap-0.5">
                   <span>{order.event_title || order.venue_name || "Belum diisi"}</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <CalendarDays className="size-3" aria-hidden />
                     {formatDateRange(order.event_date, order.event_end_date)}
                   </span>
                 </div>
               </TableCell>
 
-              <TableCell>
+              <TableCell className={td}>
                 <StatusBadge status={order.status} />
               </TableCell>
 
-              <TableCell className="text-right font-medium tabular-nums whitespace-nowrap">
+              <TableCell className={`${td} text-right font-medium tabular-nums whitespace-nowrap`}>
                 {formatRupiah(toNumber(order.total_estimate))}
+              </TableCell>
+
+              <TableCell className={tdActions}>
+                <OrderRowActions order={order} />
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        </Table>
-      </div>
+      </DataTableFrame>
     </>
+  );
+}
+
+/** Show, Edit, and a WhatsApp shortcut when the customer has a usable number. */
+function OrderRowActions({ order }: { order: OrderListEntry }) {
+  const whatsapp = buildWhatsAppLink(
+    order.customer?.phone,
+    `Halo ${order.customer?.name || "kak"}, terkait pesanan ${order.order_code}.`,
+  );
+
+  return (
+    <div className="flex flex-wrap items-center justify-end gap-1">
+      <RowActionLink
+        href={`/admin/orders/${order.id}`}
+        icon={Eye}
+        label="Lihat"
+        title={`Buka pesanan ${order.order_code}`}
+      />
+      <RowActionLink
+        href={`/admin/orders/${order.id}`}
+        icon={Pencil}
+        label="Kelola"
+        variant="default"
+        title={`Kelola pesanan ${order.order_code}`}
+      />
+      {whatsapp ? (
+        <RowActionLink
+          href={whatsapp}
+          icon={MessageCircle}
+          label="WhatsApp"
+          variant="ghost"
+          external
+          title={`Chat customer pesanan ${order.order_code}`}
+        />
+      ) : null}
+    </div>
   );
 }
