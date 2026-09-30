@@ -12,7 +12,7 @@ import {
   getPortfolioItems,
 } from "@/lib/queries/public-content";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const steps = [
   {
